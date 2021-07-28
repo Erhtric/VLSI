@@ -1,3 +1,6 @@
+import os
+import re
+
 import numpy as np
 import matplotlib.pyplot as plt
 import cv2
@@ -31,9 +34,10 @@ def read_parameters(f):
 def show_shape(s, title, lenght):
     """
     create a image with s as image and title as title of the graph
-    :param s: 
-    :param title: 
-    :return: 
+    :param s:
+    :param title:
+    :param lenght:
+    :return:
     """
     s = cv2.merge([s])
     img = plt.imshow(s)
@@ -56,7 +60,7 @@ def show_shape(s, title, lenght):
     plt.xlim(right=s.shape[1])
     plt.gca().invert_yaxis()
     plt.grid(b=True)
-    plt.savefig(f"{title}.png")
+    plt.savefig(f"{title}")
 
     # plt.show()
 
@@ -71,10 +75,22 @@ def draw_solution(arr, pieces):
 
 
 if __name__ == "__main__":
-    dim, length, shapes = read_parameters("./sol-1.txt")
-    solution = draw_solution(np.zeros(dim), shapes)
-    print(solution)
-    show_shape(solution, "sol-1.txt", length)
+    in_path = "./"
+    out_path = "./"
+    if len(sys.argv) >= 2:
+        in_path = sys.argv[1]
+    if len(sys.argv) == 3:
+        out_path = sys.argv[2]
+    files = os.listdir(in_path)
+
+    for f in files:
+        obj = re.search("^sol-[0-9]+.txt", f)
+        if obj is not None:
+            dim, length, shapes = read_parameters(f)
+            solution = draw_solution(np.zeros(dim), shapes)
+            # print(solution)
+            new_f = f.replace("txt", "png")
+            show_shape(solution, new_f, length)
 
 else:
     print("Error")
