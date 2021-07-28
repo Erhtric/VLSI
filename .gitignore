@@ -1,0 +1,12 @@
+
+.idea/
+
+venv/Lib/site-packages/setuptools/_distutils/command/
+
+venv/Lib/site-packages/setuptools/_vendor/
+
+venv/Lib/site-packages/setuptools/
+
+venv/Scripts/
+
+venv/
