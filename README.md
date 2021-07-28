@@ -15,7 +15,7 @@ The following line gives n, which is the number of necessary circuits to place
 inside the plate. Then n lines follow, each with xi and yi
 , representing the
 horizontal and vertical dimensions of the i-th circuit. For example, a file
-with the following lines:
+with the following lines:  
 9  
 5  
 3 3  
@@ -33,7 +33,7 @@ the plate l, as well as the position of each i by its ˆxi and ˆyi
 adding l next to w, and adding ˆxi and ˆyi next to xi and yi
 in the instance
 file. To exemplify, the solution of the instance depicted in Figure 1 could
-look like:
+look like:  
 9 12  
 5  
 3 3 4 0  
