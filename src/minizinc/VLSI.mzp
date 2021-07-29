@@ -1,0 +1,12 @@
+{
+    "openFiles": [
+        "cp_model_1.0.mzn"
+    ],
+    "openTab": 0,
+    "projectFiles": [
+        "cp_model_1.0.mzn"
+    ],
+    "selectedBuiltinConfigId": "org.gecode.gecode",
+    "selectedBuiltinConfigVersion": "6.3.0",
+    "version": 106
+}
