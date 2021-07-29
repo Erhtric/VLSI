@@ -25,9 +25,9 @@ def write_dzn(width, pieces, out_path="./file.dzn"):
     file.write(f"coords = [|")
     for i in range(len(pieces)):
         if i != len(pieces) - 1:
-            file.write(f"{i},")
+            file.write(f"{i + 1},")
         else:
-            file.write(f"{i}")
+            file.write(f"{i + 1}")
     file.write("|];")
     file.close()
 
