@@ -70,11 +70,14 @@ constraint forall(i in CIRCUITS)(corner_coords[i, 2] >= 1 /\ corner_coords[i, 2]
 
 solve 
 minimize height() 
-:: int_search(corner_coords, first_fail, indomain_min)
-:: restart_geometric(1.5,100)
+% :: int_search(corner_coords, first_fail, indomain_min)
+% :: restart_geometric(1.5,100)
 % satisfy
       ;
       
 % alldifferent, global cardinality constraint, among
 
+output [show(width)++" "++show(height)++"\n"]++
+       [show(n_circuits)++"\n"]++
+       [show(dims[i,1]) ++" "++ show(dims[i,2]) ++" "++ show(corner_coords[i,1]) ++" "++show(corner_coords[i,2])++"\n" | i in 1..n_circuits]
       
