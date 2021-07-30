@@ -22,13 +22,13 @@ def write_dzn(width, pieces, out_path="./file.dzn"):
     file = open(out_path, mode="w")
     file.write(f"width = {width};\n")
     file.write(f"n_circuits = {int(len(pieces) / 2)};\n")
-    file.write(f"coords = [|")
+    file.write(f"dims = [")
     for i in range(len(pieces)):
         if i != len(pieces) - 1:
-            file.write(f"{i + 1},")
+            file.write(f"{pieces[i] + 1},")
         else:
-            file.write(f"{i + 1}")
-    file.write("|];")
+            file.write(f"{pieces[i]  + 1}")
+    file.write("];")
     file.close()
 
 
