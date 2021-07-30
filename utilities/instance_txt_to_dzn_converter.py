@@ -21,7 +21,7 @@ def read_text(f):
 def write_dzn(width, pieces, out_path="./file.dzn"):
     file = open(out_path, mode="w")
     file.write(f"width = {width};\n")
-    file.write(f"n_pieces = {int(len(pieces) / 2)};\n")
+    file.write(f"n_circuits = {int(len(pieces) / 2)};\n")
     file.write(f"coords = [|")
     for i in range(len(pieces)):
         if i != len(pieces) - 1:
