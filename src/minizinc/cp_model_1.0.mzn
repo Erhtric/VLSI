@@ -33,33 +33,35 @@ function var int:
 
 function var int: height() = max([corner_coords[c, 2] + dims[c, 2] | c in CIRCUITS]);
 
+function var int: max_height() = sum([max([dims[c,d] | d in 1..2]) | c in CIRCUITS]);
+
 % ****************************************  Predicates  *****************************************************    
 
 % ****************************************  Constraints  ****************************************************
 
-% constraint forall(c1 in CIRCUITS, c2 in CIRCUITS where c1 != c2)( 
-%   distance(get_x(corner_coords, c1), get_y(corner_coords, c1), get_x(corner_coords, c2), get_y(corner_coords, c2)) >= get_x(dims, c1)
-%   \/ distance(get_x(corner_coords, c1), get_y(corner_coords, c1), get_x(corner_coords, c2), get_y(corner_coords, c2)) >= get_y(dims, c1)
-% );
 
-
-% constraint forall(c1 in CIRCUITS, c2 in CIRCUITS where c1 != c2)( 
-%   corner_coords[c2, 1] >= corner_coords[c1, 1] + dims[c1, 1]
-%   \/ corner_coords[c2, 2] >= corner_coords[c1, 2] + dims[c1, 2]
-%  );
+constraint forall(c1 in CIRCUITS, c2 in CIRCUITS where c1 != c2)( 
+  corner_coords[c2, 1] >= corner_coords[c1, 1] + dims[c1, 1] 
+  \/ corner_coords[c2, 2] >= corner_coords[c1, 2] + dims[c1, 2]
+ );
 
 
 % table
-constraint forall(c in CIRCUITS)(corner_coords[c, 1] + dims[c, 1] <= width);
+% constraint forall(c in CIRCUITS)(corner_coords[c, 1] + dims[c, 1] <= width);
+constraint among(n_circuits, [corner_coords[c, 1] + dims[c,1] | c in CIRCUITS], WIDTH);
+constraint alldifferent([corner_coords[c, 1] | c in CIRCUITS]);
+
 
 % 1 <= x <= width
 % table
 % constraint forall(i in CIRCUITS)(corner_coords[i, 1] >= 1 /\ corner_coords[i, 1] <= width);
 
-constraint among(n_circuits, [corner_coords[c, 1] | c in CIRCUITS], WIDTH);
+% requires that exactly that each of the circuits final coordinates must have coordinates in the range 1..width
+% constraint among(n_circuits, [corner_coords[c, 1] | c in CIRCUITS], WIDTH);
+
 
 % 1 <= y <= height
-constraint forall(i in CIRCUITS)(corner_coords[i, 2] >= 1 /\ corner_coords[i, 2] <= height);
+constraint forall(i in CIRCUITS)(corner_coords[i, 2] >= 1 /\ corner_coords[i, 2] <= max_height());
 
 % For now we will suppose that each piece cannot be rotated.
 
@@ -73,4 +75,5 @@ minimize height()
       ;
       
 % alldifferent, global cardinality constraint, among
+
       
