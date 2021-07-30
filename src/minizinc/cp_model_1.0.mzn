@@ -13,7 +13,6 @@ set of int: CIRCUITS = 1..n_circuits;
 % array of values of the following form:
 %    <x1, y1, x2, y2, ..., xn, yn>
 % where xi, yi represent the dimensions of the edges of the rectangle.
-int: m = 2 * n_circuits;
 array[CIRCUITS, 1..2] of int: dims;  
 
 % ****************************************  Decision variables  *********************************************
@@ -41,20 +40,22 @@ function var int: max_height() = sum([max([dims[c,d] | d in 1..2]) | c in CIRCUI
 
 
 constraint forall(c1 in CIRCUITS, c2 in CIRCUITS where c1 != c2)( 
-  corner_coords[c2, 1] >= corner_coords[c1, 1] + dims[c1, 1] 
-  \/ corner_coords[c2, 2] >= corner_coords[c1, 2] + dims[c1, 2]
+  if c1 < c2 then
+    corner_coords[c2, 1] >= corner_coords[c1, 1] + dims[c1, 1] - 1
+    \/ corner_coords[c2, 2] >= corner_coords[c1, 2] + dims[c1, 2] - 1
+  else % c1 > c2
+    true
+  endif
  );
 
 
 % table
 % constraint forall(c in CIRCUITS)(corner_coords[c, 1] + dims[c, 1] <= width);
 constraint among(n_circuits, [corner_coords[c, 1] + dims[c,1] | c in CIRCUITS], WIDTH);
-constraint alldifferent([corner_coords[c, 1] | c in CIRCUITS]);
-
 
 % 1 <= x <= width
 % table
-% constraint forall(i in CIRCUITS)(corner_coords[i, 1] >= 1 /\ corner_coords[i, 1] <= width);
+constraint forall(i in CIRCUITS)(corner_coords[i, 1] >= 1 /\ corner_coords[i, 1] <= width);
 
 % requires that exactly that each of the circuits final coordinates must have coordinates in the range 1..width
 % constraint among(n_circuits, [corner_coords[c, 1] | c in CIRCUITS], WIDTH);
@@ -69,8 +70,8 @@ constraint forall(i in CIRCUITS)(corner_coords[i, 2] >= 1 /\ corner_coords[i, 2]
 
 solve 
 minimize height() 
-% :: int_search(corner_coords, first_fail, indomain_min)
-% :: restart_geometric(1.5,100)
+:: int_search(corner_coords, first_fail, indomain_min)
+:: restart_geometric(1.5,100)
 % satisfy
       ;
       
