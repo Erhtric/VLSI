@@ -4,6 +4,7 @@ import re
 
 
 def read_text(f):
+    print(f)
     file = open(f)
     width = int(file.readline())
     # print("width ", width)
@@ -43,7 +44,7 @@ if __name__ == "__main__":
     for f in files:
         obj = re.search("^ins-[0-9]+.txt", f)
         if obj is not None:
-            width, pieces = read_text(f)
-            out_path = f.replace(".txt", ".dzn")
+            width, pieces = read_text(in_path+f)
+            f2 = f.replace(".txt", ".dzn")
             # todo decide how to represent pieces in the model so, maybe, we want to change the input data format. 
-            write_dzn(width, pieces, out_path)
+            write_dzn(width, pieces, out_path+f2)

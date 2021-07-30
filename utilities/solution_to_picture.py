@@ -20,18 +20,18 @@ def read_parameters(f):
     line = file.readline()
     hw = line.strip().split(" ")
     dim = (int(hw[0]), int(hw[1]))
-    length = int(file.readline())
+    n_circuits = int(file.readline())
     coordinates = []
-    for i in range(length):
+    for i in range(n_circuits):
         line = file.readline()
         split_line = line.replace("\n", "").split(" ")
         coordinates.append(tuple(map(int, split_line)))
 
     print(coordinates)
-    return dim, length, coordinates
+    return dim, n_circuits, coordinates
 
 
-def show_shape(s, title, lenght):
+def show_shape(s, title, n_circuits):
     """
     create a image with s as image and title as title of the graph
     :param s:
@@ -42,12 +42,17 @@ def show_shape(s, title, lenght):
     s = cv2.merge([s])
     img = plt.imshow(s)
 
-    values = np.unique(s)
+    values, counts = np.unique(s, return_counts=True)
+    print(counts)
     colors = [img.cmap(img.norm(value)) for value in values]
     labels = []
-    for i in range(lenght):
+    starting = 0
+    if n_circuits+1 == len(counts):
+        starting = 1
+        labels.append("Background")
+    for i in range(starting, len(counts)):
         labels.append(f"Piece {i + 1}")
-    patches = [mpatches.Patch(color=colors[i], label=labels[i]) for i in range(len(values))]
+    patches = [mpatches.Patch(color=colors[i], label=labels[i]) for i in range(len(counts))]
     plt.title(title)
     plt.legend(handles=patches, bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
     plt.xticks(list(range(0, s.shape[1] + 1)))
@@ -59,7 +64,7 @@ def show_shape(s, title, lenght):
     plt.xlim(left=-0.5)
     plt.xlim(right=s.shape[1])
     plt.gca().invert_yaxis()
-    plt.grid(b=True)
+    # plt.grid(b=True)
     plt.savefig(f"{title}")
 
     # plt.show()
@@ -68,8 +73,15 @@ def show_shape(s, title, lenght):
 def draw_solution(arr, pieces):
     count = 1
     for x_t, y_t, x, y in pieces:
-        arr[x:x + x_t, y: y + y_t] = count * (250 / len(pieces))
+        if x == 1:
+            x = 0
+        if y == 1:
+            y = 0
+
+        print(x_t, y_t, x, y)
+        arr[x:x + x_t, y:y + y_t] = abs(count) * (250 / len(pieces))
         count += 1
+        print(arr)
     arr = arr / np.max(arr)
     return np.rot90(arr)
 
@@ -86,11 +98,11 @@ if __name__ == "__main__":
     for f in files:
         obj = re.search("^sol-[0-9]+.txt", f)
         if obj is not None:
-            dim, length, shapes = read_parameters(f)
+            dim, n_circuits, shapes = read_parameters(f)
             solution = draw_solution(np.zeros(dim), shapes)
             # print(solution)
             new_f = f.replace("txt", "png")
-            show_shape(solution, new_f, length)
+            show_shape(solution, new_f, n_circuits)
 
 else:
     print("Error")
