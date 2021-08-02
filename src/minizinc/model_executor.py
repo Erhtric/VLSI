@@ -8,8 +8,8 @@ Usage:
     python model_executor.py model_file.mzn
         this will execute the model_file.mzn with all dzn files present in the current working directory.
     
-    python model_executor.py model_file.mzn data_file.dzn
-        this will execute the model_file.mzn with the data file indicated. 
+    python model_executor.py model_file.mzn folder
+        this will execute the model_file.mzn with the all datafile indicated by the second path. 
 """
 
 
@@ -21,11 +21,10 @@ def save_result(file_name, res_content):
     file_name = file_name.replace("dzn", "txt")
     file_name = file_name.replace("ins", "sol")
     file_name = file_name.replace("dzn", "txt")
-    res_content = res_content.replace("-", "")
-    res_content = res_content.replace("=", "")
-    print(res_content)
+    # print(res_content)
     open_file = open(file_name, "w")
-    open_file.write(res_content.strip())
+    for i in range(len(res_content)-2):
+        open_file.write(res_content[i].strip()+"\n")
     open_file.close()
 
 
@@ -65,13 +64,14 @@ if __name__ == "__main__":
         exit(-1)
     total_time = 0
     print("model file",model_file)
+    time_limit = 300*1000
     for f in files:
         begin_time = time.time_ns()
         print(f)
-        stream = cmd(f"minizinc {model_file} -d {data_path}/{f}")
+        stream = cmd(f"minizinc {model_file} -d {data_path}/{f}  --solver-time-limit {time_limit}")
         end_time = time.time_ns()
         total_time += end_time - begin_time
-        out = stream.read()
+        out = stream.readlines()
         save_result("./sol/" + f, out)
 
     total_time = total_time / (10 ** 9)

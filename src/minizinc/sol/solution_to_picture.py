@@ -9,12 +9,6 @@ import matplotlib.patches as mpatches
 import sys
 
 
-# print(sys.argv)
-# if len(sys.argv) < 2:
-#     print("Error, required at least one argument indicating the file json that represent a solution")
-#     sys.exit(1)
-
-
 def read_parameters(f):
     file = open(f)
     line = file.readline()
@@ -27,7 +21,7 @@ def read_parameters(f):
         split_line = line.replace("\n", "").split(" ")
         coordinates.append(tuple(map(int, split_line)))
 
-    print(coordinates)
+    # print(coordinates)
     return dim, n_circuits, coordinates
 
 
@@ -36,18 +30,18 @@ def show_shape(s, title, n_circuits):
     create a image with s as image and title as title of the graph
     :param s:
     :param title:
-    :param lenght:
+    :param n_circuits:
     :return:
     """
     s = cv2.merge([s])
     img = plt.imshow(s)
 
     values, counts = np.unique(s, return_counts=True)
-    print(counts)
+    # print(counts)
     colors = [img.cmap(img.norm(value)) for value in values]
     labels = []
     starting = 0
-    if n_circuits+1 == len(counts):
+    if n_circuits + 1 == len(counts):
         starting = 1
         labels.append("Background")
     for i in range(starting, len(counts)):
@@ -70,18 +64,19 @@ def show_shape(s, title, n_circuits):
     # plt.show()
 
 
-def draw_solution(arr, pieces):
+def draw_solution(sol_shape, pieces):
+    arr = np.zeros(sol_shape)
     count = 1
     for x_t, y_t, x, y in pieces:
-        if x == 1:
-            x = 0
-        if y == 1:
-            y = 0
+        # if x == 1:
+        #     x = 0
+        # if y == 1:
+        #     y = 0
 
-        print(x_t, y_t, x, y)
+        # print(x_t, y_t, x, y)
         arr[x:x + x_t, y:y + y_t] = abs(count) * (250 / len(pieces))
         count += 1
-        print(arr)
+        # print(arr)
     arr = arr / np.max(arr)
     return np.rot90(arr)
 
@@ -99,7 +94,7 @@ if __name__ == "__main__":
         obj = re.search("^sol-[0-9]+.txt", f)
         if obj is not None:
             dim, n_circuits, shapes = read_parameters(f)
-            solution = draw_solution(np.zeros(dim), shapes)
+            solution = draw_solution(dim, shapes)
             # print(solution)
             new_f = f.replace("txt", "png")
             show_shape(solution, new_f, n_circuits)
