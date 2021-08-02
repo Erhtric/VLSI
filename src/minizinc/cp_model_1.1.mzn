@@ -1,5 +1,5 @@
 % VLSI
-% 1.0 release: NO Global constraints, NO Rotations
+% 1.1 release: Global constraints, NO Rotations
 
 include "globals.mzn";
 
@@ -37,12 +37,16 @@ function var int: max_height() = sum([max([dims[c,d] | d in 1..2]) | c in CIRCUI
 
 % For now we will suppose that each piece cannot be rotated.
 
-constraint forall(c1 in CIRCUITS, c2 in CIRCUITS where c1 < c2)( 
-      corner_coords[c2, 1] >= corner_coords[c1, 1] + dims[c1, 1]
-      \/ corner_coords[c2, 2] >= corner_coords[c1, 2] + dims[c1, 2] 
- );
+constraint diffn([corner_coords[i, 1] | i in CIRCUITS], [corner_coords[i, 2] | i in CIRCUITS],
+                  [dims[i, 1] | i in CIRCUITS], [dims[i, 2] | i in CIRCUITS]);                  
 
-% table
+% constraint geost_nonoverlap_k(
+%   [corner_coords[i, 1] | i in CIRCUITS],
+%   [dims[i, 1] | i in CIRCUITS],
+%   [corner_coords[i, 2] | i in CIRCUITS],
+%   [dims[i, 2] | i in CIRCUITS]
+%   );
+
 constraint forall(i in CIRCUITS)(corner_coords[i, 1] + dims[i, 1] <= width + 1);
 % constraint among(n_circuits, [corner_coords[c, 1] + dims[c,1] | c in CIRCUITS], WIDTH);
 
@@ -66,4 +70,3 @@ minimize height()
 output [show(width)++" "++show(height)++"\n"]++
        [show(n_circuits)++"\n"]++
        [show(dims[i,1]) ++" "++ show(dims[i,2]) ++" "++ show(corner_coords[i,1]) ++" "++show(corner_coords[i,2])++"\n" | i in 1..n_circuits]
-      
