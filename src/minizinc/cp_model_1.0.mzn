@@ -1,4 +1,5 @@
-%VLSI
+% VLSI
+% 1.0 release: NO Global constraints, NO Rotations
 
 include "globals.mzn";
 
@@ -21,14 +22,10 @@ array[CIRCUITS, 1..2] of int: dims;
 %    <c1,c2, ..., cn, cn>
 array[CIRCUITS, 1..2] of var int: corner_coords;
 
-% the height of the resulting silicon plate is the sum of something. AND IT SHOULD BE MINIMIZED
+% the height of the resulting silicon plate
 var int: height = height();
 
 % ****************************************  Functions  ******************************************************
-
-% Distance function
-function var int: 
-  distance(var int: x1, var int: y1, var int: x2, var int: y2) = max(abs(x1 - x2), abs(y1 - y2));
 
 function var int: height() = max([corner_coords[c, 2] + dims[c, 2] | c in CIRCUITS]);
 
@@ -38,33 +35,25 @@ function var int: max_height() = sum([max([dims[c,d] | d in 1..2]) | c in CIRCUI
 
 % ****************************************  Constraints  ****************************************************
 
+% For now we will suppose that each piece cannot be rotated.
 
-constraint forall(c1 in CIRCUITS, c2 in CIRCUITS where c1 != c2)( 
-  if c1 < c2 then
+
+constraint forall(c1 in CIRCUITS, c2 in CIRCUITS where c1 < c2)( 
     corner_coords[c2, 1] >= corner_coords[c1, 1] + dims[c1, 1] - 1
     \/ corner_coords[c2, 2] >= corner_coords[c1, 2] + dims[c1, 2] - 1
-  else % c1 > c2
-    true
-  endif
  );
 
 
 % table
-% constraint forall(c in CIRCUITS)(corner_coords[c, 1] + dims[c, 1] <= width);
-constraint among(n_circuits, [corner_coords[c, 1] + dims[c,1] | c in CIRCUITS], WIDTH);
+constraint forall(c in CIRCUITS)(corner_coords[c, 1] + dims[c, 1] <= width);
+% constraint among(n_circuits, [corner_coords[c, 1] + dims[c,1] | c in CIRCUITS], WIDTH);
 
 % 1 <= x <= width
-% table
 constraint forall(i in CIRCUITS)(corner_coords[i, 1] >= 1 /\ corner_coords[i, 1] <= width);
 
-% requires that exactly that each of the circuits final coordinates must have coordinates in the range 1..width
-% constraint among(n_circuits, [corner_coords[c, 1] | c in CIRCUITS], WIDTH);
-
-
-% 1 <= y <= height
+% 1 <= y <= max_height
+% The values must stay in the range between 1 and the maximum possible weight obtained by putting one on top of another
 constraint forall(i in CIRCUITS)(corner_coords[i, 2] >= 1 /\ corner_coords[i, 2] <= max_height());
-
-% For now we will suppose that each piece cannot be rotated.
 
 % ****************************************  Search  *********************************************************
 
