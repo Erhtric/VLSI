@@ -31,6 +31,12 @@ function var int: height() = max([corner_coords[c, 2] + dims[c, 2] | c in CIRCUI
 
 function var int: max_height() = sum([dims[c,2]| c in CIRCUITS]);
 
+function var int: tot_area() = width * height;
+
+function var int: not_free_area() = sum([dims[i, 1] * dims[i, 1] | i in CIRCUITS]);
+
+function var int: free_area() = tot_area() - not_free_area();
+
 % ****************************************  Predicates  *****************************************************    
 
 % ****************************************  Constraints  ****************************************************
@@ -60,7 +66,7 @@ constraint forall(i in CIRCUITS)(corner_coords[i, 2] >= 0 /\ corner_coords[i, 2]
 % ****************************************  Search  *********************************************************
 
 solve 
-minimize height()
+minimize free_area()
 :: int_search(corner_coords,first_fail, indomain_max)
 :: restart_geometric(1.5,100)
 % satisfy
