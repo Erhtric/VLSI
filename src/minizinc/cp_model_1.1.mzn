@@ -29,11 +29,11 @@ var int: height = height();
 
 function var int: height() = max([corner_coords[c, 2] + dims[c, 2] | c in CIRCUITS]);
 
-function var int: max_height() = sum([dims[c,2]| c in CIRCUITS]);
+function var int: max_height() = sum([dims[c,2] | c in CIRCUITS]);
 
 function var int: tot_area() = width * height;
 
-function var int: not_free_area() = sum([dims[i, 1] * dims[i, 2] | i in CIRCUITS]);
+function var int: not_free_area() = sum([dims[c, 1] * dims[c, 2] | c in CIRCUITS]);
 
 function var int: free_area() = tot_area() - not_free_area();
 
@@ -43,17 +43,9 @@ function var int: free_area() = tot_area() - not_free_area();
 
 % For now we will suppose that each piece cannot be rotated.
 
-constraint diffn([corner_coords[i, 1] | i in CIRCUITS], [corner_coords[i, 2] | i in CIRCUITS],
-                  [dims[i, 1] | i in CIRCUITS], [dims[i, 2] | i in CIRCUITS]);                  
+constraint diffn([corner_coords[i, 1] | i in CIRCUITS], [corner_coords[i, 2] | i in CIRCUITS], [dims[i, 1] | i in CIRCUITS], [dims[i, 2] | i in CIRCUITS]);                  
 
-% constraint geost_nonoverlap_k(
-%   [corner_coords[i, 1] | i in CIRCUITS],
-%   [dims[i, 1] | i in CIRCUITS],
-%   [corner_coords[i, 2] | i in CIRCUITS],
-%   [dims[i, 2] | i in CIRCUITS]
-%   );
-
-constraint forall(i in CIRCUITS)(corner_coords[i, 1] + dims[i, 1] <= width + 1);
+constraint forall(i in CIRCUITS)(corner_coords[i, 1] + dims[i, 1] <= width);
 % constraint among(n_circuits, [corner_coords[c, 1] + dims[c,1] | c in CIRCUITS], WIDTH);
 
 % 1 <= x <= width
@@ -67,7 +59,7 @@ constraint forall(i in CIRCUITS)(corner_coords[i, 2] >= 0 /\ corner_coords[i, 2]
 
 solve 
 minimize free_area()
-:: int_search(corner_coords,first_fail, indomain_max)
+:: int_search(corner_coords,first_fail, indomain_random)
 :: restart_geometric(1.5,100)
 % satisfy
       ;
