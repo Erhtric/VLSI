@@ -1,4 +1,4 @@
-# Very large Scala Inetegration (VLSI)
+# Very Large Scala Integration (VLSI)
 
 VLSI (Very Large Scale Integration) refers to the trend of integrating circuits into silicon chips.
 A typical example is the smartphone. The modern trend of shrinking transistor sizes, allowing engineers to fit more and more transistors into the same area of silicon, has pushed the integration of more and more functions of cellphone circuitry into a single silicon die (i.e. plate). 
