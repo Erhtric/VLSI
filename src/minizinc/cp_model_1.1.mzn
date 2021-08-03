@@ -29,7 +29,7 @@ var int: height = height();
 
 function var int: height() = max([corner_coords[c, 2] + dims[c, 2] | c in CIRCUITS]);
 
-function var int: max_height() = sum([max([dims[c,d] | d in 1..2]) | c in CIRCUITS]);
+function var int: max_height() = sum([dims[c,2]| c in CIRCUITS]);
 
 % ****************************************  Predicates  *****************************************************    
 
@@ -61,7 +61,7 @@ constraint forall(i in CIRCUITS)(corner_coords[i, 2] >= 0 /\ corner_coords[i, 2]
 
 solve 
 minimize height()
-:: int_search(corner_coords, first_fail, indomain_min)
+:: int_search(corner_coords,first_fail, indomain_max)
 :: restart_geometric(1.5,100)
 % satisfy
       ;

@@ -66,6 +66,8 @@ if __name__ == "__main__":
     print("model file",model_file)
     time_limit = 300*1000
     for f in files:
+        if f.__contains__("40"):
+            continue
         begin_time = time.time_ns()
         print(f)
         stream = cmd(f"minizinc {model_file} -d {data_path}/{f}  --solver-time-limit {time_limit}")

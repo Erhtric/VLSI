@@ -1,0 +1,14 @@
+{
+    "openFiles": [
+        "../../converted_instances/ins-40.dzn",
+        "cp_model_1.1.mzn"
+    ],
+    "openTab": 1,
+    "projectFiles": [
+        "../../converted_instances/ins-40.dzn",
+        "cp_model_1.1.mzn"
+    ],
+    "selectedBuiltinConfigId": "org.gecode.gecode",
+    "selectedBuiltinConfigVersion": "6.3.0",
+    "version": 106
+}
