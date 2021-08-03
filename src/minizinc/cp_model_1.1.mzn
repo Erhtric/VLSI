@@ -33,7 +33,7 @@ function var int: max_height() = sum([dims[c,2]| c in CIRCUITS]);
 
 function var int: tot_area() = width * height;
 
-function var int: not_free_area() = sum([dims[i, 1] * dims[i, 1] | i in CIRCUITS]);
+function var int: not_free_area() = sum([dims[i, 1] * dims[i, 2] | i in CIRCUITS]);
 
 function var int: free_area() = tot_area() - not_free_area();
 
