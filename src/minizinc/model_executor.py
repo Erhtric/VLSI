@@ -64,13 +64,12 @@ if __name__ == "__main__":
         exit(-1)
     total_time = 0
     print("model file",model_file)
-    time_limit = 300*1000
+    time_limit = 30*1000
+    solver_name = "Chuffed"
     for f in files:
-        if f.__contains__("40"):
-            continue
         begin_time = time.time_ns()
         print(f)
-        stream = cmd(f"minizinc {model_file} -d {data_path}/{f}  --solver-time-limit {time_limit}")
+        stream = cmd(f"minizinc {model_file} --solver {solver_name} -d {data_path}/{f}  --solver-time-limit {time_limit}")
         end_time = time.time_ns()
         total_time += end_time - begin_time
         out = stream.readlines()
