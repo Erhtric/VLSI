@@ -19,7 +19,7 @@ def read_parameters(f):
     for i in range(n_circuits):
         line = file.readline()
         split_line = line.replace("\n", "").split(" ")
-        if len(split_line)==4:
+        if len(split_line) == 4:
             coordinates.append(tuple(map(int, split_line)))
 
     # print(coordinates)
@@ -91,13 +91,14 @@ if __name__ == "__main__":
         out_path = sys.argv[2]
     files = os.listdir(in_path)
     heights = {}
-
+    sol_n = 39
+    files = [f"sol-{sol_n}.txt"]
     for f in files:
         obj = re.search("^sol-[0-9]+.txt", f)
         if obj is not None:
             print(f)
             dim, n_circuits, shapes = read_parameters(f)
-            heights[f]=dim[1]
+            heights[f] = dim[1]
             solution = draw_solution(dim, shapes)
             # print(solution)
             new_f = f.replace("txt", "png")

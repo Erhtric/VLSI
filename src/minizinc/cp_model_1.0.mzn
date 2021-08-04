@@ -37,13 +37,22 @@ function var int: max_height() = sum([max([dims[c,d] | d in 1..2]) | c in CIRCUI
 
 % For now we will suppose that each piece cannot be rotated.
 
-constraint forall(c1 in CIRCUITS, c2 in CIRCUITS where c1 < c2)( 
-      corner_coords[c2, 1] >= corner_coords[c1, 1] + dims[c1, 1]
-      \/ corner_coords[c2, 2] >= corner_coords[c1, 2] + dims[c1, 2] 
+constraint forall(i in CIRCUITS, j in CIRCUITS where i!=j)( 
+    if  corner_coords[i,1] <corner_coords[j,1]then 
+        corner_coords[i,1]+ dims[i,1] <= corner_coords[j,1]
+    elseif  corner_coords[i,2] < corner_coords[j,2]then
+        corner_coords[i,2]+ dims[i,2] <= corner_coords[j,2]  	
+    elseif 	corner_coords[i,1]> corner_coords[j,1]then 
+        corner_coords[i,1]-dims[j,1] >=corner_coords[j,1]
+    elseif corner_coords[i,2] > corner_coords[j,2] then 
+        corner_coords[i,2] - dims[j,2] >= corner_coords[j,2]
+    else 
+        false
+    endif       
  );
 
 % table
-constraint forall(i in CIRCUITS)(corner_coords[i, 1] + dims[i, 1] <= width + 1);
+constraint forall(i in CIRCUITS)(corner_coords[i, 1] + dims[i, 1] <= width);
 % constraint among(n_circuits, [corner_coords[c, 1] + dims[c,1] | c in CIRCUITS], WIDTH);
 
 % 1 <= x <= width
@@ -51,7 +60,7 @@ constraint forall(i in CIRCUITS)(corner_coords[i, 1] >= 0 /\ corner_coords[i, 1]
 
 % 1 <= y <= max_height
 % The values must stay in the range between 1 and the maximum possible weight obtained by putting one on top of another
-constraint forall(i in CIRCUITS)(corner_coords[i, 2] >= 0 /\ corner_coords[i, 2] <= max_height() - 1);
+constraint forall(i in CIRCUITS)(corner_coords[i, 2] >= 0 /\ corner_coords[i, 2] <= max_height());
 
 % ****************************************  Search  *********************************************************
 

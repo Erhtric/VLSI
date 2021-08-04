@@ -49,18 +49,18 @@ constraint forall(i in CIRCUITS)(corner_coords[i, 1] + dims[i, 1] <= width);
 % constraint among(n_circuits, [corner_coords[c, 1] + dims[c,1] | c in CIRCUITS], WIDTH);
 
 % 1 <= x <= width
-constraint forall(i in CIRCUITS)(corner_coords[i, 1] >= 0 /\ corner_coords[i, 1] <= width);
+constraint forall(i in CIRCUITS)(corner_coords[i, 1] >= 0 /\ corner_coords[i, 1] <= width-1);
 
 % 1 <= y <= max_height
 % The values must stay in the range between 1 and the maximum possible weight obtained by putting one on top of another
 constraint forall(i in CIRCUITS)(corner_coords[i, 2] >= 0 /\ corner_coords[i, 2] <= max_height() - 1);
-
+constraint free_area()>=0;
 % ****************************************  Search  *********************************************************
 
 solve 
 minimize free_area()
-:: int_search(corner_coords,first_fail, indomain_random)
-:: restart_geometric(1.5,100)
+:: int_search(corner_coords,first_fail, indomain_min)
+:: restart_geometric(3.14, 10000)
 % satisfy
       ;
 % alldifferent, global cardinality constraint, among
