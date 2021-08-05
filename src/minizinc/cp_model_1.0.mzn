@@ -60,9 +60,14 @@ constraint forall(i in CIRCUITS)(corner_coords[i, 1] + dims[i, 1] <= width);
 % 1 <= x <= width
 constraint forall(i in CIRCUITS)(corner_coords[i, 1] >= 0 /\ corner_coords[i, 1] <= width);
 
-% 1 <= y <= max_height
-% The values must stay in the range between 1 and the maximum possible weight obtained by putting one on top of another
-constraint forall(i in CIRCUITS)(corner_coords[i, 2] >= 0 /\ corner_coords[i, 2] <= max_height());
+% 1 <= y <= height
+% The values must stay in the range between 1 and the height of the relative silicon plate found
+constraint forall(i in CIRCUITS)(corner_coords[i, 2] >= 0 /\ corner_coords[i, 2] <= height);
+
+constraint height >= 1 /\ height <= max_height();
+
+% This was removed
+% constraint forall(i in CIRCUITS)(corner_coords[i, 2] >= 0 /\ corner_coords[i, 2] <= height);
 
 % ****************************************  Search  *********************************************************
 
