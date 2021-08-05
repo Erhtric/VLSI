@@ -43,19 +43,23 @@ function var int: free_area() = tot_area() - not_free_area();
 
 % For now we will suppose that each piece cannot be rotated.
 
-constraint diffn([corner_coords[i, 1] | i in CIRCUITS], [corner_coords[i, 2] | i in CIRCUITS], [dims[i, 1] | i in CIRCUITS], [dims[i, 2] | i in CIRCUITS]);                  
+constraint diffn([corner_coords[i, 1] | i in CIRCUITS], [corner_coords[i, 2] | i in CIRCUITS], [dims[i, 1] | i in CIRCUITS], [dims[i, 2] | i in CIRCUITS]);     
+
+constraint cumulative([corner_coords[i, 1] | i in CIRCUITS], [dims[i, 1] | i in CIRCUITS], [dims[i, 2] | i in CIRCUITS], height);            
 
 constraint forall(i in CIRCUITS)(corner_coords[i, 1] + dims[i, 1] <= width);
-% constraint among(n_circuits, [corner_coords[c, 1] + dims[c,1] | c in CIRCUITS], WIDTH);
 
-% 1 <= x <= width
-constraint forall(i in CIRCUITS)(corner_coords[i, 1] >= 0 /\ corner_coords[i, 1] <= width-1);
+% 1 <= x <= width - 1 (a coordinate of a rectangle should not be placed on the extreme right, unless it has width equal to 0)
+constraint forall(i in CIRCUITS)(corner_coords[i, 1] >= 0 /\ corner_coords[i, 1] <= width - 1);
 
 % 1 <= y <= max_height
 % The values must stay in the range between 1 and the maximum possible height obtained by putting one on top of another
-constraint forall(i in CIRCUITS)(corner_coords[i, 2] >= 0 /\ corner_coords[i, 2] <= max_height() - 1);
+constraint forall(i in CIRCUITS)(corner_coords[i, 2] >= 0 /\ corner_coords[i, 2] <= max_height());
 
 constraint free_area()>=0;
+
+% Each corner should be different from any other corner coordinates (implied constraint) - it increases all the time required for the computation
+% constraint forall(i1 in CIRCUITS, i2 in CIRCUITS where i1 != i2)([corner_coords[i1, j] | j in 1..2] != [corner_coords[i2, j] | j in 1..2]);
 
 % ****************************************  Search  *********************************************************
 

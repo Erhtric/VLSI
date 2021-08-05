@@ -38,22 +38,24 @@ function var int: max_height() = sum([max([dims[c,d] | d in 1..2]) | c in CIRCUI
 % For now we will suppose that each piece cannot be rotated.
 
 constraint forall(i in CIRCUITS, j in CIRCUITS where i!=j)( 
-    if  corner_coords[i,1] <corner_coords[j,1]then 
+    if  corner_coords[i,1] < corner_coords[j,1] then 
+        % corner i is on the left of corner j 
         corner_coords[i,1]+ dims[i,1] <= corner_coords[j,1]
-    elseif  corner_coords[i,2] < corner_coords[j,2]then
+    elseif  corner_coords[i,2] < corner_coords[j,2] then
+        % corner i is below corner j 
         corner_coords[i,2]+ dims[i,2] <= corner_coords[j,2]  	
-    elseif 	corner_coords[i,1]> corner_coords[j,1]then 
+    elseif 	corner_coords[i,1] > corner_coords[j,1] then 
+        % corner i is on the right of corner j 
         corner_coords[i,1]-dims[j,1] >=corner_coords[j,1]
-    elseif corner_coords[i,2] > corner_coords[j,2] then 
+    elseif corner_coords[i,2] > corner_coords[j,2] then
+        % corner i is upon corner j  
         corner_coords[i,2] - dims[j,2] >= corner_coords[j,2]
     else 
         false
     endif       
  );
 
-% table
 constraint forall(i in CIRCUITS)(corner_coords[i, 1] + dims[i, 1] <= width);
-% constraint among(n_circuits, [corner_coords[c, 1] + dims[c,1] | c in CIRCUITS], WIDTH);
 
 % 1 <= x <= width
 constraint forall(i in CIRCUITS)(corner_coords[i, 1] >= 0 /\ corner_coords[i, 1] <= width);
