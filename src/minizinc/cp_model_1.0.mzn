@@ -78,7 +78,6 @@ minimize height()
 % satisfy
       ;
       
-% alldifferent, global cardinality constraint, among
 
 output [show(width)++" "++show(height)++"\n"]++
        [show(n_circuits)++"\n"]++

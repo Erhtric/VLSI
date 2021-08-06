@@ -45,9 +45,9 @@ function var int: free_area() = tot_area() - not_free_area;
 
 % For now we will suppose that each piece cannot be rotated.
 
-constraint diffn([corner_coords[i, 1] | i in CIRCUITS], [corner_coords[i, 2] | i in CIRCUITS], [dims[i, 1] | i in CIRCUITS], [dims[i, 2] | i in CIRCUITS]);     
+constraint diffn([corner_coords[i, 1] | i in CIRCUITS], [corner_coords[i, 2] | i in CIRCUITS], [dims[i, 1] | i in CIRCUITS], [dims[i, 2] | i in CIRCUITS])::domain;     
 
-constraint cumulative([corner_coords[i, 1] | i in CIRCUITS], [dims[i, 1] | i in CIRCUITS], [dims[i, 2] | i in CIRCUITS], height);            
+constraint cumulative([corner_coords[i, 1] | i in CIRCUITS], [dims[i, 1] | i in CIRCUITS], [dims[i, 2] | i in CIRCUITS], height)::domain;            
 
 constraint forall(i in CIRCUITS)(corner_coords[i, 1] + dims[i, 1] <= width);
 
