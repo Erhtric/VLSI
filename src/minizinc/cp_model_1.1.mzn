@@ -46,14 +46,18 @@ function var int: free_area() = tot_area() - not_free_area();
 constraint diffn([corner_coords[i, 1] | i in CIRCUITS], [corner_coords[i, 2] | i in CIRCUITS], [dims[i, 1] | i in CIRCUITS], [dims[i, 2] | i in CIRCUITS]);                  
 
 constraint forall(i in CIRCUITS)(corner_coords[i, 1] + dims[i, 1] <= width);
-% constraint among(n_circuits, [corner_coords[c, 1] + dims[c,1] | c in CIRCUITS], WIDTH);
 
 % 1 <= x <= width
 constraint forall(i in CIRCUITS)(corner_coords[i, 1] >= 0 /\ corner_coords[i, 1] <= width-1);
 
-% 1 <= y <= max_height
-% The values must stay in the range between 1 and the maximum possible height obtained by putting one on top of another
-constraint forall(i in CIRCUITS)(corner_coords[i, 2] >= 0 /\ corner_coords[i, 2] <= max_height() - 1);
+% 1 <= y <= height
+% The values must stay in the range between 1 and the height of the relative silicon plate found
+% constraint forall(i in CIRCUITS)(corner_coords[i, 2] >= 0 /\ corner_coords[i, 2] <= height);
+
+% % constraint height >= 1 /\ height <= max_height();
+
+% This was removed, still it is noticeably faster
+constraint forall(i in CIRCUITS)(corner_coords[i, 2] >= 0 /\ corner_coords[i, 2] <= height);
 
 constraint free_area()>=0;
 

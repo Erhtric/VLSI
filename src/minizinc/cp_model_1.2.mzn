@@ -53,10 +53,15 @@ constraint forall(i in CIRCUITS)(corner_coords[i, 1] + dims[i, 1] <= width);
 constraint forall(i in CIRCUITS)(corner_coords[i, 1] >= 0 /\ corner_coords[i, 1] <= width - 1);
 
 % 1 <= y <= max_height
-% The values must stay in the range between 1 and the maximum possible height obtained by putting one on top of another
-constraint forall(i in CIRCUITS)(corner_coords[i, 2] >= 0 /\ corner_coords[i, 2] <= max_height());
+% The values must stay in the range between 1 and the height of the relative silicon plate found
+constraint forall(i in CIRCUITS)(corner_coords[i, 2] >= 0 /\ corner_coords[i, 2] <= height);
 
-constraint free_area()>=0;
+constraint height >= 1 /\ height <= max_height();
+
+% This was removed
+% constraint forall(i in CIRCUITS)(corner_coords[i, 2] >= 0 /\ corner_coords[i, 2] <= height);
+
+constraint free_area() >= 0;
 
 % Each corner should be different from any other corner coordinates (implied constraint) - it increases all the time required for the computation
 % constraint forall(i1 in CIRCUITS, i2 in CIRCUITS where i1 != i2)([corner_coords[i1, j] | j in 1..2] != [corner_coords[i2, j] | j in 1..2]);
