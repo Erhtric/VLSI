@@ -38,15 +38,15 @@ function var int: max_height() = sum([max([dims[c,d] | d in 1..2]) | c in CIRCUI
 % For now we will suppose that each piece cannot be rotated.
 
 constraint forall(i in CIRCUITS, j in CIRCUITS where i!=j)( 
-    if  corner_coords[i,1] < corner_coords[j,1] then 
+    if corner_coords[i,1] < corner_coords[j,1] then 
         % corner i is on the left of corner j 
-        corner_coords[i,1]+ dims[i,1] <= corner_coords[j,1]
-    elseif  corner_coords[i,2] < corner_coords[j,2] then
+        corner_coords[i,1] + dims[i,1] <= corner_coords[j,1]
+    elseif corner_coords[i,2] < corner_coords[j,2] then
         % corner i is below corner j 
-        corner_coords[i,2]+ dims[i,2] <= corner_coords[j,2]  	
-    elseif 	corner_coords[i,1] > corner_coords[j,1] then 
+        corner_coords[i,2] + dims[i,2] <= corner_coords[j,2]  	
+    elseif corner_coords[i,1] > corner_coords[j,1] then 
         % corner i is on the right of corner j 
-        corner_coords[i,1]-dims[j,1] >=corner_coords[j,1]
+        corner_coords[i,1] - dims[j,1] >= corner_coords[j,1]
     elseif corner_coords[i,2] > corner_coords[j,2] then
         % corner i is upon corner j  
         corner_coords[i,2] - dims[j,2] >= corner_coords[j,2]
@@ -77,6 +77,7 @@ minimize height()
 :: restart_geometric(1.5,100)
 % satisfy
       ;
+      
 % alldifferent, global cardinality constraint, among
 
 output [show(width)++" "++show(height)++"\n"]++
