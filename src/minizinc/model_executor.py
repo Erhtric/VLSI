@@ -16,7 +16,10 @@ Usage:
 def save_result(file_name, res_content):
     """
     given the file name f and the result of the model with f as data file, this function saves the result out into
-    file f with txt as extension. :param f: :param out: :return:
+    file f with txt as extension.
+    :param file_name:
+    :param res_content:
+    :return: 
     """
     file_name = file_name.replace("dzn", "txt")
     file_name = file_name.replace("ins", "sol")
