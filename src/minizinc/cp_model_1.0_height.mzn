@@ -50,8 +50,8 @@ constraint forall(i in CIRCUITS, j in CIRCUITS where i!=j)(
         corner_coords[i,1] - dims[j,1] >= corner_coords[j,1]
     elseif corner_coords[i,2] > corner_coords[j,2] then
         % corner i is above corner j  
-        corner_coords[i,2] - dims[j,2] >= corner_coords[j,2]
-    else 
+        corner_coords[i,2] - dims[j,2] >= corner_coords[j,2]    
+    else
         % there is an overlap
         false
     endif       

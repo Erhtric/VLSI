@@ -1,27 +1,18 @@
 {
     "openFiles": [
         "cp_model_1.1.mzn",
-        "instances/ins-19.dzn",
-        "instances/ins-25.dzn",
-        "instances/ins-26.dzn",
-        "instances/ins-28.dzn",
-        "instances/ins-29.dzn",
-        "instances/ins-30.dzn",
-        "instances/ins-31.dzn",
-        "instances/ins-32.dzn",
-        "instances/ins-33.dzn",
-        "instances/ins-34.dzn",
-        "instances/ins-35.dzn",
-        "instances/ins-36.dzn",
-        "instances/ins-37.dzn",
-        "instances/ins-38.dzn",
-        "instances/ins-39.dzn",
-        "instances/ins-40.dzn"
+        "cp_model_1.0_area.mzn",
+        "cp_model_1.0_height.mzn",
+        "cp_model_1.1.mzn",
+        "cp_model_1.2.mzn"
     ],
-    "openTab": 4,
+    "openTab": 1,
     "projectFiles": [
         "cp_model_1.0.mzn",
+        "cp_model_1.0_area.mzn",
+        "cp_model_1.0_height.mzn",
         "cp_model_1.1.mzn",
+        "cp_model_1.2.mzn",
         "instances/ins-10.dzn",
         "instances/ins-11.dzn",
         "instances/ins-12.dzn",
@@ -59,8 +50,7 @@
         "instances/ins-6.dzn",
         "instances/ins-7.dzn",
         "instances/ins-8.dzn",
-        "instances/ins-9.dzn",
-        "../../utilities/ins-1.dzn"
+        "instances/ins-9.dzn"
     ],
     "selectedBuiltinConfigId": "org.chuffed.chuffed",
     "selectedBuiltinConfigVersion": "0.10.4",
