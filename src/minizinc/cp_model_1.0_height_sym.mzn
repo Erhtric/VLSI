@@ -27,8 +27,6 @@ array[CIRCUITS, 1..2] of var int: corner_coords;
 % the height of the resulting silicon plate
 var int: height = height();
 
-array[1..max_height, WIDTH] of var 0..n_circuits: plate;
-
 % ****************************************  Functions  ******************************************************
 
 function var int: height() = max([corner_coords[c, 2] + dims[c, 2] | c in CIRCUITS]);
@@ -38,18 +36,6 @@ function var int: height() = max([corner_coords[c, 2] + dims[c, 2] | c in CIRCUI
 % ****************************************  Constraints  ****************************************************
 
 % For now we will suppose that each piece cannot be rotated.
-
-% Qui dovrei riempire la board con i circuiti ma non funziona come dovrebbe
-constraint forall(i in CIRCUITS)(
-    forall(vx in 0..dims[i, 1], vy in 0..dims[i, 2])(
-      let {var int: x = corner_coords[i, 1], var int: y = corner_coords[i, 2]} in 
-        plate[y + vy, x + vx] = i 
-    )
-);
-
-% boh
-constraint forall(i in CIRCUITS, x in WIDTH, y in 1..max_height)(
-  if plate[x, y] != i then plate[x, y] = 0 else plate[x, y] = i endif);
 
 % No-overlap constraint
 constraint forall(i in CIRCUITS, j in CIRCUITS where i != j)( 
@@ -88,6 +74,24 @@ constraint forall(i in CIRCUITS)(corner_coords[i, 2] >= 0 /\ corner_coords[i, 2]
 % min_height <= height <= max_height
 % This is based on the fact that the height should be at least equal to the smallest height present in the list of circuits
 constraint height >= min_height /\ height <= max_height;
+
+
+constraint symmetry_breaking_constraint(
+  let {
+    % Alternative model: we express the plate as a matrix where each cell has a designated value 0 or i
+    % 0 stands for the background, i for the fact that the circuit i occupy that space
+    array[1..max_height, WIDTH] of var 0..n_circuits: plate} in
+      % channeling constraint
+      forall(i in CIRCUITS)(
+        forall(vx in 0..dims[i, 1], vy in 0..dims[i, 2])(
+          let {var int: x = corner_coords[i, 1], var int: y = corner_coords[i, 2]} in 
+            plate[y + vy, x + vx] = i 
+        ))
+      % each coordinate should be greater than (not using the old model)
+      /\ lex_greater([corner_coords[c, d] | c in CIRCUITS, d in 1..2], [])
+      % comparing permutation of the plate
+      /\ lex_greater(array1d(plate), [])
+ );
 
 % ****************************************  Search  *********************************************************
 
