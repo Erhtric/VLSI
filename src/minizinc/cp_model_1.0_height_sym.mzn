@@ -91,9 +91,12 @@ constraint symmetry_breaking_constraint(
         ))
       % each coordinate should be greater than (not using the old model)
 %       /\ lex_greater([corner_coords[c, d] | c in CIRCUITS, d in 1..2], [])
-      % comparing permutation of the plate
-      /\ lex_greater(array1d(plate), [plate[y,x] | y in 1..max_height, x in WIDTH])
-      /\ lex_greater(array1d(plate), [plate[y,x] | y in 1..max_height, x in WIDTH]) 
+      % Rotation of 90
+      /\ lex_lesseq(array1d(plate), [plate[y,x] + 1 | y in 1..max_height, x in WIDTH])
+      % Original flipped
+      /\ lex_lesseq(array1d(plate), [plate[y,x] | y in reverse(1..max_height), x in WIDTH]) 
+      % Rotation of 90 flipped
+      /\ lex_lesseq(array1d(plate), [plate[y,x] - 1 | y in reverse(1..max_height), x in WIDTH])
  );
 
 % ****************************************  Search  *********************************************************
