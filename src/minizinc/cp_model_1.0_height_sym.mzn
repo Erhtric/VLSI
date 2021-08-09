@@ -77,7 +77,6 @@ constraint forall(i in CIRCUITS)(corner_coords[i, 2] >= 0 /\ corner_coords[i, 2]
 % This is based on the fact that the height should be at least equal to the smallest height present in the list of circuits
 constraint height >= min_height /\ height <= max_height;
 
-
 constraint symmetry_breaking_constraint(
   let {
     % Alternative model: we express the plate as a matrix where each cell has a designated value 0 or i
@@ -91,12 +90,13 @@ constraint symmetry_breaking_constraint(
         ))
       % each coordinate should be greater than (not using the old model)
 %       /\ lex_greater([corner_coords[c, d] | c in CIRCUITS, d in 1..2], [])
-      % Rotation of 90
-      /\ lex_lesseq(array1d(plate), [plate[y,x] + 1 | y in 1..max_height, x in WIDTH])
+      % Rotation of 180
+      % It does not make sense to add 1
+      /\ lex_lesseq(array1d(plate), [plate[y,x] | y in reverse(1..max_height), x in reverse(WIDTH)])
       % Original flipped
       /\ lex_lesseq(array1d(plate), [plate[y,x] | y in reverse(1..max_height), x in WIDTH]) 
-      % Rotation of 90 flipped
-      /\ lex_lesseq(array1d(plate), [plate[y,x] - 1 | y in reverse(1..max_height), x in WIDTH])
+      % Rotation of 180 flipped
+      /\ lex_lesseq(array1d(plate), [plate[y,x] | y in 1..max_height, x in reverse(WIDTH)])
  );
 
 % ****************************************  Search  *********************************************************
