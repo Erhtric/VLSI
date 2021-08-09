@@ -1,6 +1,8 @@
 % VLSI
 % 1.0 release: NO Global constraints, NO Rotations, Height version
 
+include "globals.mzn";
+
 % ****************************************  PARAMETERS  *****************************************************
 
 int: width;    % width of the board
@@ -88,9 +90,10 @@ constraint symmetry_breaking_constraint(
             plate[y + vy, x + vx] = i 
         ))
       % each coordinate should be greater than (not using the old model)
-      /\ lex_greater([corner_coords[c, d] | c in CIRCUITS, d in 1..2], [])
+%       /\ lex_greater([corner_coords[c, d] | c in CIRCUITS, d in 1..2], [])
       % comparing permutation of the plate
-      /\ lex_greater(array1d(plate), [])
+      /\ lex_greater(array1d(plate), [plate[y,x] | y in 1..max_height, x in WIDTH])
+      /\ lex_greater(array1d(plate), [plate[y,x] | y in 1..max_height, x in WIDTH]) 
  );
 
 % ****************************************  Search  *********************************************************
@@ -105,5 +108,4 @@ minimize height()
 output [show(width)++" "++show(height)++"\n"]++
        [show(n_circuits)++"\n"]++
        [show(dims[i,1]) ++" "++ show(dims[i,2]) ++" "++ show(corner_coords[i,1]) ++" "++show(corner_coords[i,2])++"\n" | i in 1..n_circuits]++["\n"]
-       ++[show(plate)]
       
