@@ -1,21 +1,21 @@
 {
     "openFiles": [
-        "cp_model_1.1.mzn",
-        "cp_model_1.0_area.mzn",
         "cp_model_1.0_height.mzn",
+        "cp_model_1.0_area.mzn",
+        "cp_model_1.0_height_sym.mzn",
         "cp_model_1.1.mzn",
         "cp_model_1.2.mzn",
-        "instances/ins-1.dzn",
-        "cp_model_1.0_height_sym.mzn"
+        "cp_model_1.3.mzn"
     ],
-    "openTab": 6,
+    "openTab": 3,
     "projectFiles": [
-        "cp_model_1.0.mzn",
+        "Untitled1.dzn",
         "cp_model_1.0_area.mzn",
         "cp_model_1.0_height.mzn",
         "cp_model_1.0_height_sym.mzn",
         "cp_model_1.1.mzn",
         "cp_model_1.2.mzn",
+        "cp_model_1.3.mzn",
         "instances/ins-1.dzn",
         "instances/ins-10.dzn",
         "instances/ins-11.dzn",
