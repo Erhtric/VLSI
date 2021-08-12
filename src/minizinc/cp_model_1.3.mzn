@@ -1,5 +1,5 @@
 % VLSI
-% 1.2 release: Global constraints (CUMULATIVE), NO Rotations
+% 1.3 release: Global constraints (CUMULATIVE + DIFFN), NO Rotations
 
 include "globals.mzn";
 
@@ -12,8 +12,8 @@ set of int: WIDTH = 0..width;
 set of int: CIRCUITS = 1..n_circuits;
 
 % array of values of the following form:
-%    <w1, h1, ..., wn, hn>
-% where wi, hi represent the dimensions of the edges of the rectangle.
+%    <x1, y1, x2, y2, ..., xn, yn>
+% where xi, yi represent the dimensions of the edges of the rectangle.
 array[CIRCUITS, 1..2] of int: dims;  
 
 % maximum allowable height and minimum possible height
@@ -23,7 +23,7 @@ int: min_height = min([dims[c, 2] | c in CIRCUITS]);
 % ****************************************  Decision variables  *********************************************
 
 % our decision variables are the corner's positions (expressed in coordinates) in the silicon plate (represented in a similar manner to the dimensions)
-%    <x1,y1, ..., xn, yn>
+%    <c1,c2, ..., cn, cn>
 array[CIRCUITS, 1..2] of var int: corner_coords;
 
 % the height of the resulting silicon plate
@@ -43,9 +43,13 @@ int: not_free_area = not_free_area();
 
 function var int: free_area() = tot_area() - not_free_area;
 
+% ****************************************  Predicates  *****************************************************    
+
 % ****************************************  Constraints  ****************************************************
 
 % For now we will suppose that each piece cannot be rotated.
+
+constraint diffn([corner_coords[i, 1] | i in CIRCUITS], [corner_coords[i, 2] | i in CIRCUITS], [dims[i, 1] | i in CIRCUITS], [dims[i, 2] | i in CIRCUITS])::domain;     
 
 constraint cumulative([corner_coords[i, 1] | i in CIRCUITS], [dims[i, 1] | i in CIRCUITS], [dims[i, 2] | i in CIRCUITS], height)::domain;            
 constraint cumulative([corner_coords[i, 2] | i in CIRCUITS], [dims[i, 2] | i in CIRCUITS], [dims[i, 1] | i in CIRCUITS], width)::domain;            
