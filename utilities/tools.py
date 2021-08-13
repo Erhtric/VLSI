@@ -4,7 +4,6 @@ import cv2
 import matplotlib.patches as mpatches
 
 
-
 def read_instance_text(f):
     print(f)
     file = open(f)
@@ -21,6 +20,38 @@ def read_instance_text(f):
     return width, pieces
 
 
+def check_sat(sol_dim, coordinates):
+    """
+    Given the coordinates, check whether they satisfy the no overlapping conditions.
+    :param coordinates:
+    :return:
+    """
+    for i in range(coordinates):
+        if coordinates[i][2]+coordinates[i][0] <= sol_dim[0] and coordinates[i][3]+coordinates[i][1]<=sol_dim[1] is False:
+            print("Solution goes out of boundaries.")
+            return False
+    sat = True
+    for i in range(len(coordinates)):
+        for j in range(len(coordinates)):
+            if i != j:
+                if coordinates[i][2] < coordinates[j][2] and coordinates[i][2] + coordinates[i][0] <= \
+                        coordinates[j][2]:
+                    continue
+                elif coordinates[i][3] < coordinates[j][3] and coordinates[i][3] + coordinates[i][1] <= \
+                        coordinates[j][3]:
+                    continue
+                elif coordinates[i][2] > coordinates[j][2] and coordinates[i][2] - coordinates[j][0] >= \
+                        coordinates[j][2]:
+                    continue
+                elif coordinates[i][3] > coordinates[j][3] and coordinates[i][3] - coordinates[j][1] >= \
+                        coordinates[j][3]:
+                    continue
+                else:
+                    print(coordinates[i], coordinates[j])
+                    sat = False
+    return sat
+
+
 def write_dzn(width, pieces, out_path="./file.dzn"):
     file = open(out_path, mode="w")
     file.write(f"width = {width};\n")
@@ -28,7 +59,7 @@ def write_dzn(width, pieces, out_path="./file.dzn"):
     file.write(f"n_circuits = {n_circuits};\n")
     file.write(f"dims = [|")
     for i in range(n_circuits):
-            file.write(f" {pieces[2*i]},{pieces[2*i+1]}|")
+        file.write(f" {pieces[2 * i]},{pieces[2 * i + 1]}|")
     file.write("];")
     file.close()
 
@@ -50,7 +81,7 @@ def read_solution_parameters(f):
     return dim, n_circuits, coordinates
 
 
-def show_shape(s, title, n_circuits,shapes):
+def show_shape(s, title, n_circuits, shapes):
     """
     create a image with s as image and title as title of the graph
     :param s:
@@ -70,7 +101,7 @@ def show_shape(s, title, n_circuits,shapes):
         starting = 1
         labels.append("Background")
     for i in range(starting, len(counts)):
-        labels.append(f"{i + 1}, {shapes[i][0],shapes[i][1]}")
+        labels.append(f"{i + 1}, {shapes[i][0], shapes[i][1]}")
     patches = [mpatches.Patch(color=colors[i], label=labels[i]) for i in range(len(counts))]
     plt.title(title)
     plt.legend(handles=patches, bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
