@@ -12,7 +12,7 @@ if __name__ == "__main__":
         out_path = sys.argv[2]
     files = os.listdir(in_path)
     heights = {}
-    sol_n = 40
+    sol_n = 11
     files = [f"sol-{sol_n}.txt"]
     for f in files:
         obj = re.search("^sol-[0-9]+.txt", f)
@@ -23,7 +23,7 @@ if __name__ == "__main__":
             solution = draw_solution(dim, shapes)
             # print(solution)
             new_f = f.replace("txt", "png")
-            show_shape(solution, new_f, n_circuits)
+            show_shape(solution, new_f, n_circuits,shapes)
     print(heights)
 else:
     print("Error")

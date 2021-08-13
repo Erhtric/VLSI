@@ -50,7 +50,7 @@ def read_solution_parameters(f):
     return dim, n_circuits, coordinates
 
 
-def show_shape(s, title, n_circuits):
+def show_shape(s, title, n_circuits,shapes):
     """
     create a image with s as image and title as title of the graph
     :param s:
@@ -70,7 +70,7 @@ def show_shape(s, title, n_circuits):
         starting = 1
         labels.append("Background")
     for i in range(starting, len(counts)):
-        labels.append(f"Piece {i + 1}")
+        labels.append(f"{i + 1}, {shapes[i][0],shapes[i][1]}")
     patches = [mpatches.Patch(color=colors[i], label=labels[i]) for i in range(len(counts))]
     plt.title(title)
     plt.legend(handles=patches, bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
