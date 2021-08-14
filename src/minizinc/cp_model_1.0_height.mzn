@@ -31,7 +31,7 @@ var int: height = height();
 
 % ****************************************  Functions  ******************************************************
 
-function var int: height() = max([corner_coords[i, 2] + dims[i, 2] |i in CIRCUITS]); 
+function var int: height() = max([corner_coords[i, 2] + dims[i, 2] | i in CIRCUITS]); 
 
 % ****************************************  Constraints  ****************************************************
 
@@ -44,7 +44,7 @@ constraint forall(i,j in CIRCUITS where i!=j)(
         corner_coords[i,1] + dims[i,1] <= corner_coords[j,1]
     elseif corner_coords[i,2] < corner_coords[j,2] then
         % corner i is below corner j 
-        corner_coords[i,2] + dims[i,2] <= corner_coords[j,2]+1  	
+        corner_coords[i,2] + dims[i,2] <= corner_coords[j,2]  	
     elseif corner_coords[i,1] > corner_coords[j,1] then 
         % corner i is on the right of corner j 
         corner_coords[i,1] - dims[j,1] >= corner_coords[j,1]
@@ -56,6 +56,11 @@ constraint forall(i,j in CIRCUITS where i!=j)(
         false
     endif       
  );
+ 
+constraint forall(i, j in CIRCUITS where i != j)(
+  let {array[int] of var int: row1 = [corner_coords[i, k] | k in 1..2], array[int] of var int: row2 = [corner_coords[j, k] | k in 1..2]} in
+    row1 != row2
+); 
 
 % x, y of each block should have as starting coordinate (0,0)
 constraint forall(i in CIRCUITS)(corner_coords[i, 1] >= 0);
@@ -76,7 +81,8 @@ constraint height >= min_height /\ height <= max_height;
 
 solve 
 minimize height()
-:: int_search(corner_coords, input_order, indomain_random)
+:: int_search(corner_coords, first_fail, indomain_min)
+% :: int_search(corner_coords, input_order, indomain_random)
 % :: restart_geometric(1.5,100)
       ;
       

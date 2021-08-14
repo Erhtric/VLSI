@@ -52,18 +52,19 @@ function var int: free_area() = tot_area() - not_free_area;
 constraint diffn([corner_coords[i, 1] | i in CIRCUITS], [corner_coords[i, 2] | i in CIRCUITS], [dims[i, 1] | i in CIRCUITS], [dims[i, 2] | i in CIRCUITS])::domain;     
 
 constraint cumulative([corner_coords[i, 1] | i in CIRCUITS], [dims[i, 1] | i in CIRCUITS], [dims[i, 2] | i in CIRCUITS], height)::domain;            
-constraint cumulative([corner_coords[i, 2] | i in CIRCUITS], [dims[i, 2] | i in CIRCUITS], [dims[i, 1] | i in CIRCUITS], width)::domain;            
+constraint cumulative([corner_coords[i, 2] | i in CIRCUITS], [dims[i, 2] | i in CIRCUITS], [dims[i, 1] | i in CIRCUITS], width)::domain;           
 
 % x, y of each block should have as starting coordinate (0,0)
 constraint forall(i in CIRCUITS)(corner_coords[i, 1] >= 0);
 constraint forall(i in CIRCUITS)(corner_coords[i, 2] >= 0);
 
 % Right Border constraint
+% constraint forall(i,j in CIRCUITS where i != j)(abs(corner_coords[i, 1] - corner_coords[j, 1]) <= width);
 constraint forall(i in CIRCUITS)(corner_coords[i, 1] + dims[i,1] <= width);
 
 % The values must stay in the range between 1 and the height of the relative silicon plate found
+% constraint forall(i,j in CIRCUITS where i != j)(abs(corner_coords[i, 2] - corner_coords[j,2]) <= height);
 constraint forall(i in CIRCUITS)(corner_coords[i, 2] + dims[i,2] <= height);
-constraint height <= max_height;
 
 % min_height <= height <= max_height
 % This is based on the fact that the height should be at least equal to the smallest height present in the list of circuits
@@ -77,7 +78,7 @@ solve
 minimize height()
 % minimize free_area()
 :: int_search(corner_coords,first_fail, indomain_min)
-:: restart_geometric(3.14, 10000)
+% :: restart_geometric(3.14, 10000)
 % satisfy
       ;
 % alldifferent, global cardinality constraint, among

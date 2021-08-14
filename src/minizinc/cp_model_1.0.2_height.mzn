@@ -1,7 +1,7 @@
 % VLSI
-% 1.2 release: Global constraints (CUMULATIVE), NO Rotations
+% 1.0.2 release: NO Global constraints, NO Rotations, Height version, Decomposition
 
-include "globals.mzn";
+% include "globals.mzn";
 
 % ****************************************  PARAMETERS  *****************************************************
 
@@ -17,8 +17,8 @@ set of int: CIRCUITS = 1..n_circuits;
 array[CIRCUITS, 1..2] of int: dims;  
 
 % maximum allowable height and minimum possible height
-int: max_height = sum([max([dims[c,d] | d in 1..2]) | c in CIRCUITS]);
-int: min_height = min([dims[c, 2] | c in CIRCUITS]);
+int: max_height = sum([dims[i, 2] | i in CIRCUITS]);
+int: min_height = min([dims[i, 2] | i in CIRCUITS]);
 
 % ****************************************  Decision variables  *********************************************
 
@@ -26,30 +26,37 @@ int: min_height = min([dims[c, 2] | c in CIRCUITS]);
 %    <x1,y1, ..., xn, yn>
 array[CIRCUITS, 1..2] of var int: corner_coords;
 
-% the height of the resulting silicon plate
+% the height of the silicon plate
 var int: height = height();
 
 % ****************************************  Functions  ******************************************************
 
-function var int: height() = max([corner_coords[c, 2] + dims[c, 2] | c in CIRCUITS]);
+function var int: height() = max([corner_coords[i, 2] + dims[i, 2] |i in CIRCUITS]); 
 
-function var int: max_height() = sum([dims[c,2] | c in CIRCUITS]);
-
-function var int: tot_area() = width * height;
-
-function int: not_free_area() = sum([dims[c, 1] * dims[c, 2] | c in CIRCUITS]);
-
-int: not_free_area = not_free_area();
-
-function var int: free_area() = tot_area() - not_free_area;
+% Cumulative decomposition
+predicate cumulative(array[int] of var int: coords, array[int] of int: dims1, array[int] of int: dims2, var int: border) = 
+  let {set of int: circuits = 1..length(coords)} in
+  forall(j in circuits)(
+      border >= dims2[j] + 
+        sum(i in circuits where i != j)(
+          bool2int(coords[i] <= coords[j] /\ coords[j] < coords[i] + dims1[i]) * dims2[i])
+  ); 
+  
+% Diffn/2 decomposition
+predicate diffn(array[int] of var int: X, array[int] of var int: Y, array[int] of var int: W, array[int] of var int: H) =
+  let {set of int: circuits = 1..length(X)} in
+  forall(i, j in circuits where i != j)(
+    exists([X[i] >= X[j] + W[j] \/ X[j] >= X[i] + W[i], Y[i] >= Y[j] + H[j] \/ Y[j] >= Y[i] + H[i]])
+  );
 
 % ****************************************  Constraints  ****************************************************
 
 % For now we will suppose that each piece cannot be rotated.
 
-% With only the cumulative constraints a block can be split resulting in a wrong solution!
-constraint cumulative([corner_coords[i, 1] | i in CIRCUITS], [dims[i, 1] | i in CIRCUITS], [dims[i, 2] | i in CIRCUITS], height)::domain;            
-constraint cumulative([corner_coords[i, 2] | i in CIRCUITS], [dims[i, 2] | i in CIRCUITS], [dims[i, 1] | i in CIRCUITS], width)::domain;            
+constraint diffn([corner_coords[i, 1] | i in CIRCUITS], [corner_coords[i, 2] | i in CIRCUITS], [dims[i, 1] | i in CIRCUITS], [dims[i, 2] | i in CIRCUITS]);
+
+constraint cumulative([corner_coords[i, 1] | i in CIRCUITS], [dims[i, 1] | i in CIRCUITS], [dims[i, 2] | i in CIRCUITS], height);            
+constraint cumulative([corner_coords[i, 2] | i in CIRCUITS], [dims[i, 2] | i in CIRCUITS], [dims[i, 1] | i in CIRCUITS], width); 
 
 % x, y of each block should have as starting coordinate (0,0)
 constraint forall(i in CIRCUITS)(corner_coords[i, 1] >= 0);
@@ -66,20 +73,17 @@ constraint height <= max_height;
 % This is based on the fact that the height should be at least equal to the smallest height present in the list of circuits
 constraint height >= min_height /\ height <= max_height;
 
-constraint free_area() >= 0;
-
 % ****************************************  Search  *********************************************************
 
 solve 
 minimize height()
-% minimize free_area()
-% :: int_search(corner_coords,first_fail, indomain_min)
-:: int_search(corner_coords, first_fail, indomain_random)
-:: restart_geometric(3.14, 10000)
-% satisfy
+% :: int_search(corner_coords, input_order, indomain_random)
+:: int_search(corner_coords, first_fail, indomain_min)
+% :: restart_geometric(1.5,100)
       ;
-% alldifferent, global cardinality constraint, among
+      
 
 output [show(width)++" "++show(height)++"\n"]++
        [show(n_circuits)++"\n"]++
        [show(dims[i,1]) ++" "++ show(dims[i,2]) ++" "++ show(corner_coords[i,1]) ++" "++show(corner_coords[i,2])++"\n" | i in 1..n_circuits]
+      

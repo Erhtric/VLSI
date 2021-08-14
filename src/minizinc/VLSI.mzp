@@ -5,11 +5,12 @@
         "cp_model_1.0_height_sym.mzn",
         "cp_model_1.1.mzn",
         "cp_model_1.2.mzn",
-        "cp_model_1.3.mzn"
+        "cp_model_1.3.mzn",
+        "cp_model_1.0.2_height.mzn"
     ],
-    "openTab": 3,
+    "openTab": 6,
     "projectFiles": [
-        "Untitled1.dzn",
+        "cp_model_1.0.2_height.mzn",
         "cp_model_1.0_area.mzn",
         "cp_model_1.0_height.mzn",
         "cp_model_1.0_height_sym.mzn",
