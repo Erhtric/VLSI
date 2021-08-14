@@ -66,13 +66,16 @@ if __name__ == "__main__":
         print("There are no data file indicated!")
         exit(-1)
     total_time = 0
-    print("model file",model_file)
+    print("model file", model_file)
     time_limit = 300*1000
     solver_name = "Chuffed"
+    ins_n = 23
+    files = [f"ins-{ins_n}.dzn"]
     for f in files:
         begin_time = time.time_ns()
         print(f)
-        stream = cmd(f"minizinc {model_file} --solver {solver_name} -d {data_path}/{f}  --solver-time-limit {time_limit}")
+        stream = cmd(f"minizinc {model_file} --solver {solver_name} -d {data_path}/{f}"
+                     f"  --solver-time-limit {time_limit} --random-seed 10")
         end_time = time.time_ns()
         total_time += end_time - begin_time
         out = stream.readlines()

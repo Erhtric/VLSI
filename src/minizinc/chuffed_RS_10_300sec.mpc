@@ -1,0 +1,9 @@
+{
+    "-O": 2,
+    "compiler-statistics": true,
+    "intermediate-solutions": true,
+    "random-seed": "10",
+    "solver": "org.chuffed.chuffed@0.10.4",
+    "solver-statistics": true,
+    "time-limit": 300000
+}
