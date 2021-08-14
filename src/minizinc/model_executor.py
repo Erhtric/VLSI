@@ -67,7 +67,7 @@ if __name__ == "__main__":
         exit(-1)
     total_time = 0
     print("model file",model_file)
-    time_limit = 30*1000
+    time_limit = 300*1000
     solver_name = "Chuffed"
     for f in files:
         begin_time = time.time_ns()

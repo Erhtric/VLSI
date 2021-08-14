@@ -24,9 +24,10 @@ def check_sat(sol_dim, coordinates):
     """
     Given the coordinates, check whether they satisfy the no overlapping conditions.
     :param coordinates:
+    :param sol_dim:
     :return:
     """
-    for i in range(coordinates):
+    for i in range(len(coordinates)):
         if coordinates[i][2]+coordinates[i][0] <= sol_dim[0] and coordinates[i][3]+coordinates[i][1]<=sol_dim[1] is False:
             print("Solution goes out of boundaries.")
             return False
@@ -103,7 +104,7 @@ def show_shape(s, title, n_circuits, shapes):
     for i in range(starting, len(counts)):
         labels.append(f"{i + 1}, {shapes[i][0], shapes[i][1]}")
     patches = [mpatches.Patch(color=colors[i], label=labels[i]) for i in range(len(counts))]
-    plt.title(title)
+    plt.title(title+f"- {n_circuits} circuits")
     plt.legend(handles=patches, bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
     plt.xticks(list(range(0, s.shape[1] + 1)))
     yticks = list(range(0, s.shape[0]))
