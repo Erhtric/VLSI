@@ -11,6 +11,8 @@ venv/Scripts/
 
 venv/
 
+utilities/__pycache__
+
 CDMO_Project_2021.pdf
 
 src/smt/.ipynb_checkpoints/
