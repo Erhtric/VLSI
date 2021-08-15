@@ -13,7 +13,7 @@ if __name__ == "__main__":
     files = os.listdir(in_path)
     heights = {}
     sol_n = 18
-    files = [f"sol-{sol_n}.txt"]
+    files = [f"sol-0{sol_n}.txt" for sol_n in range(1,10)]
     for f in files:
         obj = re.search("^sol-[0-9]+.txt", f)
         if obj is not None:
