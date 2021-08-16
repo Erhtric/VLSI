@@ -26,30 +26,30 @@ int: min_height = min([dims[i, 2] | i in CIRCUITS]);
 %    <x1,y1, ..., xn, yn>
 array[CIRCUITS, 1..2] of var int: corner_coords;
 
-% the height of the silicon plate
-var int: height = height();
-
 % The additional Boolean variable rot is used to indicate the change of orientation of the block
 % Since they are all rectangles, a simple swap between the two edges is enough to distinguish between
 % the original rectangle and the rotated one
-%    False - the block is in its original orientation
-%    True  - the block is rotated by 90 degrees
+%    0 - the block is in its original orientation
+%    1 - the block is rotated by 90 degrees
 array[CIRCUITS] of var int: rot;
+
+% the height of the silicon plate
+var int: height = height();
 
 % ****************************************  Functions  ******************************************************
 
-function var int: height() = max([corner_coords[i, 2] + dims[i, 2] | i in CIRCUITS]); 
+function var int: height() = max([corner_coords[i, 2] + rot[i] * dims[i, 1] + (1 - rot[i]) * dims[i, 2] | i in CIRCUITS]); 
 
 % ****************************************  Constraints  ****************************************************
 
 % For now we will suppose that each piece cannot be rotated.
  
 % No-overlap constraint
-constraint forall(i,j in CIRCUITS where i!=j)(
+constraint forall(i,j in CIRCUITS where i != j)(
   corner_coords[i,1] + rot[i] * dims[i,2] + (1 - rot[i]) * dims[i,1] <= corner_coords[j,1] \/
-  corner_coords[i,2] + rot[i] * dims[i,2] + (1 - rot[i]) * dims[i,1] <= corner_coords[j,2] \/
-  corner_coords[i,1] - rot[i] * dims[i,1] - (1 - rot[i]) * dims[i,2] >= corner_coords[j,1] \/
-  corner_coords[i,2] - rot[i] * dims[i,1] - (1 - rot[i]) * dims[i,2] >= corner_coords[j,2]
+  corner_coords[i,2] + rot[i] * dims[i,1] + (1 - rot[i]) * dims[i,2] <= corner_coords[j,2] \/
+  corner_coords[i,1] - rot[j] * dims[j,2] - (1 - rot[j]) * dims[j,1] >= corner_coords[j,1] \/
+  corner_coords[i,2] - rot[j] * dims[j,1] - (1 - rot[j]) * dims[j,2] >= corner_coords[j,2]
 );
 
 % x, y of each block should have as starting coordinate (0,0)
@@ -80,5 +80,5 @@ minimize height()
 
 output [show(width)++" "++show(height)++"\n"]++
        [show(n_circuits)++"\n"]++
-       [show(dims[i,1]) ++" "++ show(dims[i,2]) ++" "++ show(corner_coords[i,1]) ++" "++show(corner_coords[i,2]) ++" "++show(rot[i]) ++"\n" | i in 1..n_circuits]
+       [show(dims[i,1]) ++" "++ show(dims[i,2]) ++" "++ show(corner_coords[i,1]) ++" "++show(corner_coords[i,2]) ++ " " ++ show(rot[i]) ++"\n" | i in 1..n_circuits]
       

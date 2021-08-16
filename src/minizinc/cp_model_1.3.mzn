@@ -59,11 +59,9 @@ constraint forall(i in CIRCUITS)(corner_coords[i, 1] >= 0);
 constraint forall(i in CIRCUITS)(corner_coords[i, 2] >= 0);
 
 % Right Border constraint
-% constraint forall(i,j in CIRCUITS where i != j)(abs(corner_coords[i, 1] - corner_coords[j, 1]) <= width);
 constraint forall(i in CIRCUITS)(corner_coords[i, 1] + dims[i,1] <= width);
 
 % The values must stay in the range between 1 and the height of the relative silicon plate found
-% constraint forall(i,j in CIRCUITS where i != j)(abs(corner_coords[i, 2] - corner_coords[j,2]) <= height);
 constraint forall(i in CIRCUITS)(corner_coords[i, 2] + dims[i,2] <= height);
 
 % min_height <= height <= max_height
