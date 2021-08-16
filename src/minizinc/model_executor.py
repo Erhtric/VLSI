@@ -73,7 +73,7 @@ if __name__ == "__main__":
     print("model file", model_file)
     time_limit = 300 * 1000
     solver_name = "Chuffed"
-    ins_n = 18
+    ins_n = 20
     if ins_n < 10:
         files = [f"ins-0{ins_n}.dzn"]
     else:
