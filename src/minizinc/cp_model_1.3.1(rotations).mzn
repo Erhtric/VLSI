@@ -2,6 +2,7 @@
 % 1.3.1 release: Global constraints (CUMULATIVE + DIFFN) + Decompositions, Rotations
 
 include "cumulative.mzn";
+include "diffn.mzn";
 
 % ****************************************  PARAMETERS  *****************************************************
 
@@ -42,19 +43,11 @@ function var int: height() = max([corner_coords[i, 2] + rot[i] * dims[i, 1] + (1
 
 % ****************************************  Predicates  *****************************************************    
 
-% Diffn/2 decomposition
-predicate diffn(array[int] of var int: X, array[int] of var int: Y, array[int] of var int: W, array[int] of var int: H) =
-  let {set of int: circuits = 1..length(X)} in
-  forall(i, j in circuits where i != j)(
-    exists([X[i] >= X[j] + (1 - rot[j]) * W[j] + rot[j] * W[j] \/ X[j] >= X[i] + (1 - rot[i]) * W[i] + rot[i] * W[i]
-            , Y[i] >= Y[j] + (1 - rot[j]) * H[j] + rot[j] * H[j] \/ Y[j] >= Y[i] + (1 - rot[i]) * H[i] + rot[i] * H[i]])
-  );
-
 % ****************************************  Constraints  ****************************************************
 
 % For now we will suppose that each piece cannot be rotated.
 
-constraint diffn([corner_coords[i, 1] | i in CIRCUITS], [corner_coords[i, 2] | i in CIRCUITS], [dims[i, 1] | i in CIRCUITS], [dims[i, 2] | i in CIRCUITS]);
+constraint diffn([corner_coords[i, 1] | i in CIRCUITS], [corner_coords[i, 2] | i in CIRCUITS], [(1 - rot[i]) * dims[i, 1] | i in CIRCUITS], [rot[i] * dims[i, 2] | i in CIRCUITS]);
 
 constraint cumulative([corner_coords[i, 1] | i in CIRCUITS], [dims[i, 1] | i in CIRCUITS], [dims[i, 2] | i in CIRCUITS], height);            
 constraint cumulative([corner_coords[i, 2] | i in CIRCUITS], [dims[i, 2] | i in CIRCUITS], [dims[i, 1] | i in CIRCUITS], width);   
