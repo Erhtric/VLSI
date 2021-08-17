@@ -64,7 +64,9 @@ constraint height >= min_height /\ height <= max_height;
 
 % With (RS: 10, ins-20): 29s, W/out: 58s
 constraint symmetry_breaking_constraint(
+    % the biggest block should stay in the left half part of the plate, this breaks the symmetries on the vertical axis
     corner_coords[biggest(), 1] * 2 <= width
+    % the biggest block should stay in the bottom half part of the plate, this breaks the symmetries on the horizontal axis
     /\ corner_coords[biggest(), 2] * 2 <= height
     );
 
