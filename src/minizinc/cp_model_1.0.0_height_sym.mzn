@@ -33,31 +33,28 @@ var int: height = height();
 
 function var int: height() = max([corner_coords[c, 2] + dims[c, 2] | c in CIRCUITS]);
 
-% ****************************************  Predicates  *****************************************************    
+function int: biggest() = arg_max([dims[c,2] | c in CIRCUITS]);
+
+% function var int: get_value(int: i, int: j) = 
+%   [if i >= corner_coords[c, 1] /\ i <= corner_coords[c, 1] + dims[c, 1] \/ j >= corner_coords[c, 2] /\ j <= corner_coords[c, 2] + dims[c, 2] then
+%   c else 0 endif | c in CIRCUITS];
+
+function array[int, int] of var int: fill_values() =  array2d(1..max_height, WIDTH, [0 | j in 1..max_height, i in WIDTH]);
+
+%   let {array[int] of var int: xs = [corner_coords[c, 1] | c in CIRCUITS], array[int] of var int: ys = [corner_coords[c, 2] | c in CIRCUITS]} in
+%       array2d(1..max_height, WIDTH, [get_value(i, j) | j in 1..max_height, i in WIDTH]);
 
 % ****************************************  Constraints  ****************************************************
 
 % For now we will suppose that each piece cannot be rotated.
 
 % No-overlap constraint
-constraint forall(i in CIRCUITS, j in CIRCUITS where i != j)( 
-    if corner_coords[i,1] < corner_coords[j,1] then 
-        % corner i is on the left of corner j 
-        corner_coords[i,1] + dims[i,1] <= corner_coords[j,1]
-    elseif corner_coords[i,2] < corner_coords[j,2] then
-        % corner i is below corner j 
-        corner_coords[i,2] + dims[i,2] <= corner_coords[j,2]  	
-    elseif corner_coords[i,1] > corner_coords[j,1] then 
-        % corner i is on the right of corner j 
-        corner_coords[i,1] - dims[j,1] >= corner_coords[j,1]
-    elseif corner_coords[i,2] > corner_coords[j,2] then
-        % corner i is above corner j  
-        corner_coords[i,2] - dims[j,2] >= corner_coords[j,2]    
-    else
-        % there is an overlap
-        false
-    endif       
- );
+constraint forall(i,j in CIRCUITS where i!=j)(
+  corner_coords[i,1] + dims[i,1] <= corner_coords[j,1] \/
+  corner_coords[i,2] + dims[i,2] <= corner_coords[j,2] \/
+  corner_coords[i,1] - dims[j,1] >= corner_coords[j,1] \/
+  corner_coords[i,2] - dims[j,2] >= corner_coords[j,2]
+);
 
 % x, y of each block should have as starting coordinate (0,0)
 constraint forall(i in CIRCUITS)(corner_coords[i, 1] >= 0);
@@ -68,34 +65,26 @@ constraint forall(i in CIRCUITS)(corner_coords[i, 1] + dims[i,1] <= width);
 
 % The values must stay in the range between 1 and the height of the relative silicon plate found
 constraint forall(i in CIRCUITS)(corner_coords[i, 2] + dims[i,2] <= height);
-constraint height <= max_height;
 
 % min_height <= height <= max_height
 % This is based on the fact that the height should be at least equal to the smallest height present in the list of circuits
 constraint height >= min_height /\ height <= max_height;
 
+% constraint symmetry_breaking_constraint(forall(c in CIRCUITS)(corner_coords[c, 2] <= (height - max_circuit()) / 2));
+
 % DOES NOT WORK 
+% constraint symmetry_breaking_constraint(
+%       % Rotation of 180
+%       lex_lesseq(array1d(plate), [plate[y,x] | y in reverse(1..max_height), x in reverse(WIDTH)])
+%       % Original flipped
+%       /\ lex_lesseq(array1d(plate), [plate[y,x] | y in reverse(1..max_height), x in WIDTH]) 
+%       % Rotation of 180 flipped
+%       /\ lex_lesseq(array1d(plate), [plate[y,x] | y in 1..max_height, x in reverse(WIDTH)])
+%  );
+
 constraint symmetry_breaking_constraint(
-  let {
-    % Alternative model: we express the plate as a matrix where each cell has a designated value 0 or i
-    % 0 stands for the background, i for the fact that the circuit i occupy that space
-    array[1..max_height, WIDTH] of var 0..n_circuits: plate} in
-      % channeling constraint
-      forall(i in CIRCUITS)(
-        forall(vx in 0..dims[i, 1], vy in 0..dims[i, 2])(
-          let {var int: x = corner_coords[i, 1], var int: y = corner_coords[i, 2]} in 
-            plate[y + vy, x + vx] = i 
-        ))
-      % each coordinate should be greater than (not using the old model)
-%       /\ lex_greater([corner_coords[c, d] | c in CIRCUITS, d in 1..2], [])
-      % Rotation of 180
-      % It does not make sense to add 1
-      /\ lex_lesseq(array1d(plate), [plate[y,x] | y in reverse(1..max_height), x in reverse(WIDTH)])
-      % Original flipped
-      /\ lex_lesseq(array1d(plate), [plate[y,x] | y in reverse(1..max_height), x in WIDTH]) 
-      % Rotation of 180 flipped
-      /\ lex_lesseq(array1d(plate), [plate[y,x] | y in 1..max_height, x in reverse(WIDTH)])
- );
+    corner_coords[biggest(), 1] * 2 <= width
+    );
 
 % ****************************************  Search  *********************************************************
 
