@@ -1,0 +1,101 @@
+\documentclass[12pt, a4paper]{article}
+\linespread{1.5}
+
+\usepackage[margin=1in]{geometry} % full-width
+\usepackage[T1]{fontenc}
+
+\usepackage[dvipsnames]{xcolor}
+
+% Package for tables
+\usepackage{booktabs}
+\usepackage{tabularx}
+% AMS Packages
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+
+% Pacchetto per le colonne
+\usepackage{multicol}
+\setlength{\columnsep}{1cm}
+
+% Package for glyphs
+\usepackage{fontawesome} 
+
+% Unicode
+\usepackage[utf8]{inputenc}
+
+\usepackage{hyperref}
+\hypersetup{
+	unicode,
+	colorlinks,
+	breaklinks,
+    linkcolor = Emerald,
+    urlcolor = BlueViolet,
+    citecolor = BrickRed,
+	pdfauthor = {Alex Costanzino, Xiaowei Wen},
+	pdftitle = {Bayesian network model for diagnosis of psychiatric diseases},
+	pdfsubject = {Fundamentals of Artificial Intelligence and Knowledge Representation},
+}
+
+\usepackage[sorting = ynt]{biblatex} %Imports biblatex package
+\addbibresource{refs.bib} %Import the bibliography file
+
+\setlength{\parindent}{0pt} % Elimina rientri
+
+\usepackage{caption}
+\usepackage{subcaption}
+
+% Impostazioni per il sottotitolo
+\usepackage{titling}
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \par\end{center}
+    \begin{center}\large#1\end{center}
+    \vskip0.5em}
+    }
+
+\usepackage{graphicx, color}
+\graphicspath{{fig/}}
+
+%\usepackage[linesnumbered,ruled,vlined,commentsnumbered]{algorithm2e} % use algorithm2e for typesetting algorithms
+\usepackage{algorithm, algpseudocode} % use algorithm and algorithmicx for typesetting algorithms
+\usepackage{mathrsfs} % for \mathscr command
+
+
+% Title and other info
+\title{\textbf{VLSI - Very Large Scale Integration}}
+\subtitle{Combinatorial Decision Making and Optimization \\ Module 1}
+
+\date{Academic year 2020-2021}
+
+% Authors info
+\author{Eric Rossetto \\ 
+\href{mailto:eric.rossetto@studio.unibo.it}{\faEnvelopeO~eric.rossetto@studio.unibo.it} \\
+\href{https://github.com/Erhtric}{\textbf{\textsc{\faGithub~GitHub}}}
+\and Xiaowei Wen \\ 
+\href{mailto:marco.costante@studio.unibo.it}{\faEnvelopeO~xiaowei.wen@studio.unibo.it} \\
+\href{https://github.com/WenXiaowei}{\textbf{\textsc{\faGithub~GitHub}}}
+}
+
+
+
+\begin{document}
+	\maketitle
+	\begin{abstract}
+	\normalsize
+    VLSI (Very Large Scale Integration) refers to the trend of integrating circuits into silicon chips. A typical example is the smartphone. The modern trend of shrinking transistor sizes, allowing engineers to fit more and more transistors into the same area of silicon, has pushed the integration of more and more functions of cellphone circuitry into a single silicon die (i.e. plate). This enabled the modern cellphone to mature into a powerful tool that shrank from the size of a large brick-sized unit to a device small enough to comfortably carry in a pocket or purse, with a video camera, touchscreen, and other advanced features.
+	\end{abstract}
+	\clearpage
+    \tableofcontents
+	
+	\clearpage
+
+	\input{01_introduction.tex}
+    \input{02_CSP}
+    \input{03_SMT}
+    \input{04_SAT}
+    \input{05_results_analysis_and_comparison}
+    \input{06_conlusion_future_developments}
+	\nocite{*} % Flag to put all citations in the bibliography
+	\printbibliography
+\end{document}
