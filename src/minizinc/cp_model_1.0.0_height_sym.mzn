@@ -1,6 +1,7 @@
 % VLSI
-% 1.0.0 release: NO Global constraints, NO Rotations, Height version
-% This is the base version of the model, i.e. the one described in the report.
+% 1.0.0_sym release: NO Global constraints, NO Rotations, Height version
+
+include "globals.mzn";
 
 % ****************************************  PARAMETERS  *****************************************************
 
@@ -16,8 +17,8 @@ set of int: CIRCUITS = 1..n_circuits;
 array[CIRCUITS, 1..2] of int: dims;  
 
 % maximum allowable height and minimum possible height
-int: max_height = sum([dims[i, 2] | i in CIRCUITS]);
-int: min_height = min([dims[i, 2] | i in CIRCUITS]);
+int: max_height = sum([max([dims[c,d] | d in 1..2]) | c in CIRCUITS]);
+int: min_height = min([dims[c, 2] | c in CIRCUITS]);
 
 % ****************************************  Decision variables  *********************************************
 
@@ -25,17 +26,28 @@ int: min_height = min([dims[i, 2] | i in CIRCUITS]);
 %    <x1,y1, ..., xn, yn>
 array[CIRCUITS, 1..2] of var int: corner_coords;
 
-% the height of the silicon plate
+% the height of the resulting silicon plate
 var int: height = height();
 
 % ****************************************  Functions  ******************************************************
 
-function var int: height() = max([corner_coords[i, 2] + dims[i, 2] | i in CIRCUITS]); 
+function var int: height() = max([corner_coords[c, 2] + dims[c, 2] | c in CIRCUITS]);
+
+function int: biggest() = arg_max([dims[c,2] | c in CIRCUITS]);
+
+% function var int: get_value(int: i, int: j) = 
+%   [if i >= corner_coords[c, 1] /\ i <= corner_coords[c, 1] + dims[c, 1] \/ j >= corner_coords[c, 2] /\ j <= corner_coords[c, 2] + dims[c, 2] then
+%   c else 0 endif | c in CIRCUITS];
+
+function array[int, int] of var int: fill_values() =  array2d(1..max_height, WIDTH, [0 | j in 1..max_height, i in WIDTH]);
+
+%   let {array[int] of var int: xs = [corner_coords[c, 1] | c in CIRCUITS], array[int] of var int: ys = [corner_coords[c, 2] | c in CIRCUITS]} in
+%       array2d(1..max_height, WIDTH, [get_value(i, j) | j in 1..max_height, i in WIDTH]);
 
 % ****************************************  Constraints  ****************************************************
 
 % For now we will suppose that each piece cannot be rotated.
- 
+
 % No-overlap constraint
 constraint forall(i,j in CIRCUITS where i!=j)(
   corner_coords[i,1] + dims[i,1] <= corner_coords[j,1] \/
@@ -53,23 +65,37 @@ constraint forall(i in CIRCUITS)(corner_coords[i, 1] + dims[i,1] <= width);
 
 % The values must stay in the range between 1 and the height of the relative silicon plate found
 constraint forall(i in CIRCUITS)(corner_coords[i, 2] + dims[i,2] <= height);
-constraint height <= max_height;
 
 % min_height <= height <= max_height
 % This is based on the fact that the height should be at least equal to the smallest height present in the list of circuits
 constraint height >= min_height /\ height <= max_height;
+
+% constraint symmetry_breaking_constraint(forall(c in CIRCUITS)(corner_coords[c, 2] <= (height - max_circuit()) / 2));
+
+% DOES NOT WORK 
+% constraint symmetry_breaking_constraint(
+%       % Rotation of 180
+%       lex_lesseq(array1d(plate), [plate[y,x] | y in reverse(1..max_height), x in reverse(WIDTH)])
+%       % Original flipped
+%       /\ lex_lesseq(array1d(plate), [plate[y,x] | y in reverse(1..max_height), x in WIDTH]) 
+%       % Rotation of 180 flipped
+%       /\ lex_lesseq(array1d(plate), [plate[y,x] | y in 1..max_height, x in reverse(WIDTH)])
+%  );
+
+constraint symmetry_breaking_constraint(
+    corner_coords[biggest(), 1] * 2 <= width
+    );
 
 % ****************************************  Search  *********************************************************
 
 solve 
 minimize height()
 :: int_search(corner_coords, first_fail, indomain_min)
-% :: int_search(corner_coords, input_order, indomain_random)
-% :: restart_geometric(1.5,100)
+:: restart_geometric(1.5,100)
       ;
       
 
 output [show(width)++" "++show(height)++"\n"]++
        [show(n_circuits)++"\n"]++
-       [show(dims[i,1]) ++" "++ show(dims[i,2]) ++" "++ show(corner_coords[i,1]) ++" "++show(corner_coords[i,2])++"\n" | i in 1..n_circuits]
+       [show(dims[i,1]) ++" "++ show(dims[i,2]) ++" "++ show(corner_coords[i,1]) ++" "++show(corner_coords[i,2])++"\n" | i in 1..n_circuits]++["\n"]
       
