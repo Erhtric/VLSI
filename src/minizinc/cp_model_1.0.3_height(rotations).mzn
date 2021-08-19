@@ -73,6 +73,7 @@ constraint forall(i in CIRCUITS)(rot[i] >= 0 /\ rot[i] <= 1);
 solve 
 minimize height()
 :: int_search(corner_coords, first_fail, indomain_min)
+:: int_search(rot,first_fail, indomain_min)
 % :: int_search(corner_coords, input_order, indomain_random)
 % :: restart_geometric(1.5,100)
       ;
