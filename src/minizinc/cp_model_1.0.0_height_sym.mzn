@@ -12,7 +12,7 @@ set of int: WIDTH = 0..width;
 set of int: CIRCUITS = 1..n_circuits;
 
 % array of values of the following form:
-%    <w1, h1, ..., wn, hn>
+%    <x1, y1, ..., xn, yn>
 % where wi, hi represent the dimensions of the edges of the rectangle.
 array[CIRCUITS, 1..2] of int: dims;  
 
@@ -23,7 +23,7 @@ int: min_height = min([dims[c, 2] | c in CIRCUITS]);
 % ****************************************  Decision variables  *********************************************
 
 % our decision variables are the corner's positions (expressed in coordinates) in the silicon plate (represented in a similar manner to the dimensions)
-%    <x1,y1, ..., xn, yn>
+%    <w1,h1, ..., wn, hn>
 array[CIRCUITS, 1..2] of var int: corner_coords;
 
 % the height of the resulting silicon plate
@@ -33,16 +33,8 @@ var int: height = height();
 
 function var int: height() = max([corner_coords[c, 2] + dims[c, 2] | c in CIRCUITS]);
 
+% It returns the index of the block which has the largest height value
 function int: biggest() = arg_max([dims[c,2] | c in CIRCUITS]);
-
-% function var int: get_value(int: i, int: j) = 
-%   [if i >= corner_coords[c, 1] /\ i <= corner_coords[c, 1] + dims[c, 1] \/ j >= corner_coords[c, 2] /\ j <= corner_coords[c, 2] + dims[c, 2] then
-%   c else 0 endif | c in CIRCUITS];
-
-function array[int, int] of var int: fill_values() =  array2d(1..max_height, WIDTH, [0 | j in 1..max_height, i in WIDTH]);
-
-%   let {array[int] of var int: xs = [corner_coords[c, 1] | c in CIRCUITS], array[int] of var int: ys = [corner_coords[c, 2] | c in CIRCUITS]} in
-%       array2d(1..max_height, WIDTH, [get_value(i, j) | j in 1..max_height, i in WIDTH]);
 
 % ****************************************  Constraints  ****************************************************
 
@@ -70,20 +62,11 @@ constraint forall(i in CIRCUITS)(corner_coords[i, 2] + dims[i,2] <= height);
 % This is based on the fact that the height should be at least equal to the smallest height present in the list of circuits
 constraint height >= min_height /\ height <= max_height;
 
-% constraint symmetry_breaking_constraint(forall(c in CIRCUITS)(corner_coords[c, 2] <= (height - max_circuit()) / 2));
-
-% DOES NOT WORK 
-% constraint symmetry_breaking_constraint(
-%       % Rotation of 180
-%       lex_lesseq(array1d(plate), [plate[y,x] | y in reverse(1..max_height), x in reverse(WIDTH)])
-%       % Original flipped
-%       /\ lex_lesseq(array1d(plate), [plate[y,x] | y in reverse(1..max_height), x in WIDTH]) 
-%       % Rotation of 180 flipped
-%       /\ lex_lesseq(array1d(plate), [plate[y,x] | y in 1..max_height, x in reverse(WIDTH)])
-%  );
-
 constraint symmetry_breaking_constraint(
+    % the biggest block should stay in the left half part of the plate, this breaks the symmetries on the vertical axis
     corner_coords[biggest(), 1] * 2 <= width
+    % the biggest block should stay in the bottom half part of the plate, this breaks the symmetries on the horizontal axis
+    /\ corner_coords[biggest(), 2] * 2 <= height
     );
 
 % ****************************************  Search  *********************************************************
@@ -91,7 +74,7 @@ constraint symmetry_breaking_constraint(
 solve 
 minimize height()
 :: int_search(corner_coords, first_fail, indomain_min)
-:: restart_geometric(1.5,100)
+% :: restart_geometric(1.5,100)
       ;
       
 
