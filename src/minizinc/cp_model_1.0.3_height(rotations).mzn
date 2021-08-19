@@ -47,8 +47,8 @@ function var int: height() = max([corner_coords[i, 2] + rot[i] * dims[i, 1] + (1
 % No-overlap constraint
 constraint forall(i,j in CIRCUITS where i != j)(
   corner_coords[i,1] + rot[i] * dims[i,2] + (1 - rot[i]) * dims[i,1] <= corner_coords[j,1] \/
-  corner_coords[i,2] + rot[i] * dims[i,1] + (1 - rot[i]) * dims[i,2] <= corner_coords[j,2] \/
   corner_coords[i,1] - rot[j] * dims[j,2] - (1 - rot[j]) * dims[j,1] >= corner_coords[j,1] \/
+  corner_coords[i,2] + rot[i] * dims[i,1] + (1 - rot[i]) * dims[i,2] <= corner_coords[j,2] \/
   corner_coords[i,2] - rot[j] * dims[j,1] - (1 - rot[j]) * dims[j,2] >= corner_coords[j,2]
 );
 

@@ -1,6 +1,6 @@
 % VLSI
 % 1.0.0 release: NO Global constraints, NO Rotations, Height version
-% This is the base version of the model, i.e. the one described in the report.
+% This is the base version of the model, i.e. the one described in the report.Witho
 
 % ****************************************  PARAMETERS  *****************************************************
 
@@ -53,7 +53,6 @@ constraint forall(i in CIRCUITS)(corner_coords[i, 1] + dims[i,1] <= width);
 
 % The values must stay in the range between 1 and the height of the relative silicon plate found
 constraint forall(i in CIRCUITS)(corner_coords[i, 2] + dims[i,2] <= height);
-constraint height <= max_height;
 
 % min_height <= height <= max_height
 % This is based on the fact that the height should be at least equal to the smallest height present in the list of circuits
