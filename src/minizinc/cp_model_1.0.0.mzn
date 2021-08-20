@@ -1,6 +1,6 @@
 % VLSI
 % 1.0.0 release: NO Global constraints, NO Rotations, Height version
-% This is the base version of the model, i.e. the one described in the report.Witho
+% This is the base version of the model, i.e. the one described in the report.
 
 % ****************************************  PARAMETERS  *****************************************************
 

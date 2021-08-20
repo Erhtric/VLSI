@@ -1,7 +1,7 @@
 % VLSI
 % 1.1 release: Global constraints (DIFFN), NO Rotations
 
-include "globals.mzn";
+include "diffn.mzn";
 
 % ****************************************  PARAMETERS  *****************************************************
 
@@ -33,14 +33,6 @@ var int: height = height();
 
 function var int: height() = max([corner_coords[c, 2] + dims[c, 2] | c in CIRCUITS]);
 
-function var int: max_height() = sum([dims[c,2] | c in CIRCUITS]);
-
-function var int: tot_area() = width * height;
-
-function var int: not_free_area() = sum([dims[c, 1] * dims[c, 2] | c in CIRCUITS]);
-
-function var int: free_area() = tot_area() - not_free_area();
-
 % ****************************************  Constraints  ****************************************************
 
 % For now we will suppose that each piece cannot be rotated.
@@ -63,18 +55,13 @@ constraint height <= max_height;
 % This is based on the fact that the height should be at least equal to the smallest height present in the list of circuits
 constraint height >= min_height /\ height <= max_height;
 
-constraint free_area()>=0;
-
 % ****************************************  Search  *********************************************************
 
 solve 
 minimize height()
-% minimize free_area()
 :: int_search(corner_coords,first_fail, indomain_min)
 :: restart_geometric(3.14, 10000)
-% satisfy
       ;
-% alldifferent, global cardinality constraint, among
 
 output [show(width)++" "++show(height)++"\n"]++
        [show(n_circuits)++"\n"]++
