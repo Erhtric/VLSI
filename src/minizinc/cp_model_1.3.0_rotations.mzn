@@ -41,8 +41,6 @@ var int: height = height();
 
 function var int: height() = max([corner_coords[i, 2] + rot[i] * dims[i, 1] + (1 - rot[i]) * dims[i, 2] | i in CIRCUITS]); 
 
-% ****************************************  Predicates  *****************************************************    
-
 % ****************************************  Constraints  ****************************************************
 
 % For now we will suppose that each piece cannot be rotated.

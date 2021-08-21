@@ -12,7 +12,7 @@ set of int: WIDTH = 0..width;
 set of int: CIRCUITS = 1..n_circuits;
 
 % array of values of the following form:
-%    <x1, y1, x2, y2, ..., xn, yn>
+%    <w1, h1, w2, h2, ..., wn, hn>
 % where xi, yi represent the dimensions of the edges of the rectangle.
 array[CIRCUITS, 1..2] of int: dims;  
 
@@ -23,7 +23,7 @@ int: min_height = min([dims[c, 2] | c in CIRCUITS]);
 % ****************************************  Decision variables  *********************************************
 
 % our decision variables are the corner's positions (expressed in coordinates) in the silicon plate (represented in a similar manner to the dimensions)
-%    <c1,c2, ..., cn, cn>
+%    <x1,y2, ..., xn, yn>
 array[CIRCUITS, 1..2] of var int: corner_coords;
 
 % the height of the resulting silicon plate
@@ -32,18 +32,6 @@ var int: height = height();
 % ****************************************  Functions  ******************************************************
 
 function var int: height() = max([corner_coords[c, 2] + dims[c, 2] | c in CIRCUITS]);
-
-function var int: max_height() = sum([dims[c,2] | c in CIRCUITS]);
-
-function var int: tot_area() = width * height;
-
-function int: not_free_area() = sum([dims[c, 1] * dims[c, 2] | c in CIRCUITS]);
-
-int: not_free_area = not_free_area();
-
-function var int: free_area() = tot_area() - not_free_area;
-
-% ****************************************  Predicates  *****************************************************    
 
 % ****************************************  Constraints  ****************************************************
 
@@ -68,18 +56,14 @@ constraint forall(i in CIRCUITS)(corner_coords[i, 2] + dims[i,2] <= height);
 % This is based on the fact that the height should be at least equal to the smallest height present in the list of circuits
 constraint height >= min_height /\ height <= max_height;
 
-constraint free_area() >= 0;
-
 % ****************************************  Search  *********************************************************
 
 solve 
 minimize height()
-% minimize free_area()
 :: int_search(corner_coords,first_fail, indomain_min)
 % :: restart_geometric(3.14, 10000)
 % satisfy
       ;
-% alldifferent, global cardinality constraint, among
 
 output [show(width)++" "++show(height)++"\n"]++
        [show(n_circuits)++"\n"]++
