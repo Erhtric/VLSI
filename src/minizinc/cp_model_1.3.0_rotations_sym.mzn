@@ -1,7 +1,8 @@
 % VLSI
-% 1.3.0.1 release: Global constraints (CUMULATIVE + DIFFN), NO Rotations, Symmetries
+% 1.3.1 release: Global constraints (CUMULATIVE + DIFFN) + Decompositions, Rotations
 
-include "globals.mzn";
+include "cumulative.mzn";
+include "diffn.mzn";
 
 % ****************************************  PARAMETERS  *****************************************************
 
@@ -26,42 +27,47 @@ int: min_height = min([dims[c, 2] | c in CIRCUITS]);
 %    <c1,c2, ..., cn, cn>
 array[CIRCUITS, 1..2] of var int: corner_coords;
 
+% The additional Boolean variable rot is used to indicate the change of orientation of the block
+% Since they are all rectangles, a simple swap between the two edges is enough to distinguish between
+% the original rectangle and the rotated one
+%    0 - the block is in its original orientation
+%    1 - the block is rotated by 90 degrees
+array[CIRCUITS] of var int: rot;
+
 % the height of the resulting silicon plate
 var int: height = height();
 
 % ****************************************  Functions  ******************************************************
 
-function var int: height() = max([corner_coords[c, 2] + dims[c, 2] | c in CIRCUITS]);
+function var int: height() = max([corner_coords[i, 2] + rot[i] * dims[i, 1] + (1 - rot[i]) * dims[i, 2] | i in CIRCUITS]); 
 
-function int: biggest() = arg_max([dims[c, 1] * dims[c, 2] | c in CIRCUITS]);
-
-% ****************************************  Predicates  *****************************************************    
+function int: biggest() = arg_max([dims[c,2] | c in CIRCUITS]);
 
 % ****************************************  Constraints  ****************************************************
 
 % For now we will suppose that each piece cannot be rotated.
 
-constraint diffn([corner_coords[i, 1] | i in CIRCUITS], [corner_coords[i, 2] | i in CIRCUITS], [dims[i, 1] | i in CIRCUITS], [dims[i, 2] | i in CIRCUITS])::domain;     
+constraint diffn([corner_coords[i, 1] | i in CIRCUITS], [corner_coords[i, 2] | i in CIRCUITS], [(1 - rot[i]) * dims[i, 1] | i in CIRCUITS], [rot[i] * dims[i, 2] | i in CIRCUITS]);
 
-constraint cumulative([corner_coords[i, 1] | i in CIRCUITS], [dims[i, 1] | i in CIRCUITS], [dims[i, 2] | i in CIRCUITS], height)::domain;            
-constraint cumulative([corner_coords[i, 2] | i in CIRCUITS], [dims[i, 2] | i in CIRCUITS], [dims[i, 1] | i in CIRCUITS], width)::domain;           
+constraint cumulative([corner_coords[i, 1] | i in CIRCUITS], [dims[i, 1] | i in CIRCUITS], [dims[i, 2] | i in CIRCUITS], height);            
+constraint cumulative([corner_coords[i, 2] | i in CIRCUITS], [dims[i, 2] | i in CIRCUITS], [dims[i, 1] | i in CIRCUITS], width);   
 
 % x, y of each block should have as starting coordinate (0,0)
 constraint forall(i in CIRCUITS)(corner_coords[i, 1] >= 0);
 constraint forall(i in CIRCUITS)(corner_coords[i, 2] >= 0);
 
 % Right Border constraint
-constraint forall(i in CIRCUITS)(corner_coords[i, 1] + dims[i,1] <= width);
+constraint forall(i in CIRCUITS)(corner_coords[i, 1] + rot[i] * dims[i,2] + (1 - rot[i]) * dims[i,1] <= width);
 
 % The values must stay in the range between 1 and the height of the relative silicon plate found
-constraint forall(i in CIRCUITS)(corner_coords[i, 2] + dims[i,2] <= height);
+constraint forall(i in CIRCUITS)(corner_coords[i, 2] + rot[i] * dims[i,2] + (1 - rot[i]) * dims[i,1] <= height);
 
 % min_height <= height <= max_height
 % This is based on the fact that the height should be at least equal to the smallest height present in the list of circuits
 constraint height >= min_height /\ height <= max_height;
 
+constraint forall(i in CIRCUITS)(rot[i] >= 0 /\ rot[i] <= 1);
 
-% With (RS: 10, ins-20): 29s, W/out: 58s
 % constraint symmetry_breaking_constraint(
 %     % the biggest block should stay in the left half part of the plate, this breaks the symmetries on the vertical axis
 %     corner_coords[biggest(), 1] * 2 <= width
@@ -86,4 +92,5 @@ minimize height()
 
 output [show(width)++" "++show(height)++"\n"]++
        [show(n_circuits)++"\n"]++
-       [show(dims[i,1]) ++" "++ show(dims[i,2]) ++" "++ show(corner_coords[i,1]) ++" "++show(corner_coords[i,2])++"\n" | i in 1..n_circuits]
+       [show(dims[i,1]) ++" "++ show(dims[i,2]) ++" "++ show(corner_coords[i,1]) ++" "++show(corner_coords[i,2]) ++ " " ++ show(rot[i]) ++"\n" | i in 1..n_circuits]
+      
