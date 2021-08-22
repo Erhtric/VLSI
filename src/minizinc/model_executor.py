@@ -67,14 +67,16 @@ if __name__ == "__main__":
         print("There are no data file indicated!")
         exit(-1)
 
-    models = ["cp_model_1.0.0.mzn",
-              "cp_model_1.0.0_rotations.mzn",
-              "cp_model_1.0.0_rotations_sym.mzn",
-              "cp_model_1.0.0_sym.mzn",
-              "cp_model_1.3.0.mzn",
-              "cp_model_1.3.0_rotations.mzn",
-              # "cp_model_1.3.0_rotations_sym.mzn",
-              "cp_model_1.3.0_sym.mzn"]
+    models = [
+              # "cp_model_1.0.0.mzn",
+              # "cp_model_1.0.0_rotations.mzn",
+              # "cp_model_1.0.0_rotations_sym.mzn",
+              # "cp_model_1.0.0_sym.mzn",
+              # "cp_model_1.3.0.mzn",
+              # "cp_model_1.3.0_rotations.mzn",
+              "cp_model_1.3.0_rotations_sym.mzn",
+              # "cp_model_1.3.0_sym.mzn"
+              ]
     for model_file in models:
         time_file_name = model_file.replace("mzn","json")
         with open(f"./{time_file_name}", "r") as f:
@@ -84,7 +86,7 @@ if __name__ == "__main__":
         print("model file", model_file)
         time_limit = 300 * 1000
         solver_name = "Chuffed"
-        files = [f"ins-{ins_n}.dzn" for ins_n in range(10,20)]
+        # files = [f"ins-{ins_n}.dzn" for ins_n in range(10,20)]
         for f in files:
             begin_time = time.time_ns()
             print(f)
