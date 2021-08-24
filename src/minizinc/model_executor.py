@@ -66,31 +66,44 @@ if __name__ == "__main__":
     if len(files) == 0:
         print("There are no data file indicated!")
         exit(-1)
-    with open("./time.json", "r") as f:
-        time_json = json.load(f)
 
-    total_time = 0
-    print("model file", model_file)
-    time_limit = 300 * 1000
-    solver_name = "Chuffed"
-    ins_n = 20
-    if ins_n < 10:
-        files = [f"ins-0{ins_n}.dzn"]
-    else:
-        files = [f"ins-{ins_n}.dzn"]
-    for f in files:
-        begin_time = time.time_ns()
-        print(f)
-        stream = cmd(f"minizinc {model_file} --solver {solver_name} -d {data_path}/{f}"
-                     f"  --solver-time-limit {time_limit} --random-seed 10")
-        end_time = time.time_ns()
-        total_time += (end_time - begin_time)
-        time_json[f] = (end_time - begin_time)/ (10 ** 9)
-        out = stream.readlines()
-        save_result("./sol/" + f, out)
+    models = [
+              # "cp_model_1.0.0.mzn",
+              # "cp_model_1.0.0_rotations.mzn",
+              # "cp_model_1.0.0_rotations_sym.mzn",
+              # "cp_model_1.0.0_sym.mzn",
+              # "cp_model_1.3.0.mzn",
+              # "cp_model_1.3.0_rotations.mzn",
+              "cp_model_1.3.0_rotations_sym.mzn",
+              # "cp_model_1.3.0_sym.mzn"
+              ]
+    for model_file in models:
+        time_file_name = model_file.replace("mzn","json")
+        with open(f"./{time_file_name}", "r") as f:
+            time_json = json.load(f)
 
-    total_time = total_time / (10 ** 9)
-    print(f"Time take to run {len(files)} instances: {total_time}s, averagely {total_time / len(files)} sec/file.")
-    with open("time.json", "w") as outfile:
-        data = json.dumps(time_json, indent=4, sort_keys=True)
-        outfile.write(data)
+        total_time = 0
+        print("model file", model_file)
+        time_limit = 300 * 1000
+        solver_name = "Chuffed"
+        # files = [f"ins-{ins_n}.dzn" for ins_n in range(10,20)]
+        for f in files:
+            begin_time = time.time_ns()
+            print(f)
+            stream = cmd(f"minizinc {model_file} --solver {solver_name} -d {data_path}/{f}"
+                         f" --solver-time-limit {time_limit} --random-seed 10")
+            try:
+                out = stream.readlines()
+                end_time = time.time_ns()
+                total_time += (end_time - begin_time)
+                time_json[f] = (end_time - begin_time) / (10 ** 9)
+                save_result("./sol/" + f, out)
+            except KeyboardInterrupt:
+                print("Time limit reached!")
+                time_json[f] = -1
+
+        total_time = total_time / (10 ** 9)
+        print(f"Time take to run {len(files)} instances: {total_time}s, averagely {total_time / len(files)} sec/file.")
+        with open(f"./{time_file_name}", "w") as outfile:
+            data = json.dumps(time_json, indent=4, sort_keys=True)
+            outfile.write(data)

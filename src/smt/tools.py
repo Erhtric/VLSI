@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import cv2
 import matplotlib.patches as mpatches
 
+
 def read_instance_text(f):
     """ 
     It reads the instance data, in the following format:
@@ -67,6 +68,44 @@ def show_shape(s, title, n_circuits):
     plt.show()
 
 
+def check_sat_rot(sol_dim, coordinates):
+    """
+    Given the coordinates, check whether they satisfy the no overlapping conditions.
+    :param coordinates:
+    :param sol_dim:
+    :return:
+    """
+    for i in range(len(coordinates)):
+        x_t, y_t, x, y, rot = coordinates[i]
+        if rot == 0:
+            if x + x_t <= sol_dim[0] and y + y_t <= sol_dim[1] is False:
+                print("Solution goes out of boundaries.")
+                return False
+        else:  # rot ==1:
+            if x + y_t <= sol_dim[0] and y + x_t <= sol_dim[1] is False:
+                print("Solution goes out of boundaries.")
+                return False
+
+    sat = True
+    for i in range(len(coordinates)):
+        for j in range(len(coordinates)):
+            if i != j:
+                xt_i, yt_i, x_i, y_i, rot_i = coordinates[i]
+                xt_j, yt_j, x_j, y_j, rot_j = coordinates[j]
+                if x_i < x_j and x_i + rot_i * yt_i + (1 - rot_i) * xt_i <= x_j:
+                    continue
+                elif y_i < y_j and y_i + rot_i * xt_i + (1 - rot_i) * yt_i <= y_j:
+                    continue
+                elif x_i > x_j and x_i - rot_j * yt_j - (1 - rot_j) * xt_j >= x_j:
+                    continue
+                elif y_i > y_j and y_i - rot_j * xt_j - (1 - rot_j) * yt_j >= y_j:
+                    continue
+                else:
+                    print(coordinates[i], coordinates[j])
+                    sat = False
+    return sat
+
+
 def draw_solution(sol_shape, pieces):
     """
     Returns an array with shape = sol_shape, and pieces drawn in the array
@@ -90,7 +129,7 @@ def draw_solution_rot(sol_shape, pieces):
     arr = np.zeros(sol_shape)
     count = 1
     # area = 0
-    for x_t, y_t, x, y,rot in pieces:
+    for x_t, y_t, x, y, rot in pieces:
         if rot == 0:
             arr[x:x + x_t, y:y + y_t] = abs(count) * (255 / len(pieces))
         else:
@@ -98,6 +137,7 @@ def draw_solution_rot(sol_shape, pieces):
         count += 1
     arr = arr / np.max(arr)
     return np.rot90(arr)
+
 
 def dims_sol_unify(W, H, X, Y):
     """
@@ -110,6 +150,7 @@ def dims_sol_unify(W, H, X, Y):
     :return:
     """
     return [(W[i], H[i], X[i], Y[i]) for i in range(len(W))]
+
 
 def dims_sol_unify_rot(W, H, X, Y, rot):
     """
@@ -152,6 +193,7 @@ def save_sol(file_name, w, h, W, H, X, Y):
     for i in range(len(W)):
         file.write(f"{W[i]} {H[i]} {X[i]} {Y[i]}\n")
     file.close()
+
 
 def save_sol_rot(file_name, w, h, W, H, X, Y, rot):
     """

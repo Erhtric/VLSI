@@ -20,6 +20,43 @@ def read_instance_text(f):
     return width, pieces
 
 
+def check_sat_rot(sol_dim, coordinates):
+    """
+    Given the coordinates, check whether they satisfy the no overlapping conditions.
+    :param coordinates:
+    :param sol_dim:
+    :return:
+    """
+    for i in range(len(coordinates)):
+        x_t, y_t, x, y, rot = coordinates[i]
+        if rot == 0:
+            if x + x_t <= sol_dim[0] and y + y_t <= sol_dim[1] is False:
+                print("Solution goes out of boundaries.")
+                return False
+        else:  # rot ==1:
+            if x + y_t <= sol_dim[0] and y + x_t <= sol_dim[1] is False:
+                print("Solution goes out of boundaries.")
+                return False
+
+    sat = True
+    for i in range(len(coordinates)):
+        for j in range(len(coordinates)):
+            if i != j:
+                xt_i, yt_i, x_i, y_i, rot_i = coordinates[i]
+                xt_j, yt_j, x_j, y_j, rot_j = coordinates[j]
+                if x_i < x_j and x_i + rot_i * yt_i + (1 - rot_i) * xt_i <= x_j:
+                    continue
+                elif y_i < y_j and y_i + rot_i * xt_i + (1 - rot_i) * yt_i <= y_j:
+                    continue
+                elif x_i > x_j and x_i - rot_j * yt_j - (1 - rot_j) * xt_j >= x_j:
+                    continue
+                elif y_i > y_j and y_i - rot_j * xt_j - (1 - rot_j) * yt_j >= y_j:
+                    continue
+                else:
+                    print(coordinates[i], coordinates[j])
+                    sat = False
+    return sat
+
 def check_sat(sol_dim, coordinates):
     """
     Given the coordinates, check whether they satisfy the no overlapping conditions.
@@ -135,6 +172,6 @@ def draw_solution(sol_shape, pieces):
         arr[x:x + x_t, y:y + y_t] = abs(count) * (250 / len(pieces))
         count += 1
         # print(arr)
-    print(area)
+    # print(area)
     arr = arr / np.max(arr)
     return np.rot90(arr)
