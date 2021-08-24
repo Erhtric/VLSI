@@ -68,18 +68,12 @@ constraint height >= min_height /\ height <= max_height;
 
 constraint forall(i in CIRCUITS)(rot[i] >= 0 /\ rot[i] <= 1);
 
-% constraint symmetry_breaking_constraint(
-%     % the biggest block should stay in the left half part of the plate, this breaks the symmetries on the vertical axis
-%     corner_coords[biggest(), 1] * 2 <= width
-%     % the biggest block should stay in the bottom half part of the plate, this breaks the symmetries on the horizontal axis
-%     /\ corner_coords[biggest(), 2] * 2 <= height
-%     );
-    
 constraint symmetry_breaking_constraint(
-    corner_coords[biggest(), 1] = 0
-    /\ corner_coords[biggest(), 2] = 0
+    % the biggest block should stay in the left half part of the plate, this breaks the symmetries on the vertical axis
+    corner_coords[biggest(), 1] * 2 <= width
+    % the biggest block should stay in the bottom half part of the plate, this breaks the symmetries on the horizontal axis
+    /\ corner_coords[biggest(), 2] * 2 <= height
     );
-
 
 % ****************************************  Search  *********************************************************
 
