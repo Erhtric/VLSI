@@ -66,19 +66,19 @@ if __name__ == "__main__":
     if len(files) == 0:
         print("There are no data file indicated!")
         exit(-1)
-
+    # files = [f"ins-{i}.dzn" for i in range(19,20)]
     models = [
-              # "cp_model_1.0.0.mzn",
-              # "cp_model_1.0.0_rotations.mzn",
-              # "cp_model_1.0.0_rotations_sym.mzn",
-              # "cp_model_1.0.0_sym.mzn",
-              # "cp_model_1.3.0.mzn",
-              # "cp_model_1.3.0_rotations.mzn",
-              "cp_model_1.3.0_rotations_sym.mzn",
-              # "cp_model_1.3.0_sym.mzn"
-              ]
+        # "cp_model_1.0.0.mzn",
+        # "cp_model_1.0.0_rotations.mzn",
+        "cp_model_1.0.0_rotations_sym.mzn",
+        "cp_model_1.0.0_sym.mzn",
+        # "cp_model_1.3.0.mzn",
+        # "cp_model_1.3.0_rotations.mzn",
+        "cp_model_1.3.0_rotations_sym.mzn",
+        "cp_model_1.3.0_sym.mzn"
+    ]
     for model_file in models:
-        time_file_name = model_file.replace("mzn","json")
+        time_file_name = model_file.replace("mzn", "json")
         with open(f"./{time_file_name}", "r") as f:
             time_json = json.load(f)
 
