@@ -5,7 +5,7 @@
 \usepackage[T1]{fontenc}
 
 \usepackage[dvipsnames]{xcolor}
-
+\usepackage{gensymb}
 % Package for tables
 \usepackage{booktabs}
 \usepackage{tabularx}
@@ -20,7 +20,8 @@
 
 % Package for glyphs
 \usepackage{fontawesome} 
-
+\usepackage[table,xcdraw]{xcolor}
+% \documentclass[xcolor=table]{beamer}
 % Unicode
 \usepackage[utf8]{inputenc}
 
@@ -60,7 +61,10 @@
 %\usepackage[linesnumbered,ruled,vlined,commentsnumbered]{algorithm2e} % use algorithm2e for typesetting algorithms
 \usepackage{algorithm, algpseudocode} % use algorithm and algorithmicx for typesetting algorithms
 \usepackage{mathrsfs} % for \mathscr command
+\usepackage{amsmath}
 
+\usepackage{listings}
+\input{mznlisting}
 
 % Title and other info
 \title{\textbf{VLSI - Very Large Scale Integration}}
@@ -70,10 +74,12 @@
 
 % Authors info
 \author{Eric Rossetto \\ 
+Matricola: 982594 \\
 \href{mailto:eric.rossetto@studio.unibo.it}{\faEnvelopeO~eric.rossetto@studio.unibo.it} \\
 \href{https://github.com/Erhtric}{\textbf{\textsc{\faGithub~GitHub}}}
 \and Xiaowei Wen \\ 
-\href{mailto:marco.costante@studio.unibo.it}{\faEnvelopeO~xiaowei.wen@studio.unibo.it} \\
+Matricola: 982501 \\
+\href{mailto:xiaowei.wen@studio.unibo.it}{\faEnvelopeO~xiaowei.wen@studio.unibo.it} \\
 \href{https://github.com/WenXiaowei}{\textbf{\textsc{\faGithub~GitHub}}}
 }
 
@@ -81,19 +87,29 @@
 
 \begin{document}
 	\maketitle
+	
+    \hypersetup{linkcolor=blue}
 	\begin{abstract}
 	\normalsize
     VLSI (Very Large Scale Integration) refers to the trend of integrating circuits into silicon chips. A typical example is the smartphone. The modern trend of shrinking transistor sizes, allowing engineers to fit more and more transistors into the same area of silicon, has pushed the integration of more and more functions of cellphone circuitry into a single silicon die (i.e. plate). This enabled the modern cellphone to mature into a powerful tool that shrank from the size of a large brick-sized unit to a device small enough to comfortably carry in a pocket or purse, with a video camera, touchscreen, and other advanced features.
 	\end{abstract}
 	\clearpage
-    \tableofcontents
-
+	{
+    \hypersetup{linkcolor=black}
+	\tableofcontents
 	\clearpage
+	\listoftables
+	}
+
+	
+	\clearpage
+
 	\input{01_introduction.tex}
-    \input{02_CSP}
-    \input{03_SMT}
-    \input{04_results_analysis_and_comparison}
-    \input{05_conlusion_future_developments}
+	\input{02_models}
+	\input{03_CSP}
+    \input{04_SMT}
+    \input{05_results_analysis_and_comparison}
+    \input{06_conlusion_future_developments}
 	\nocite{*} % Flag to put all citations in the bibliography
 	\printbibliography
 \end{document}

@@ -1,2 +1,28 @@
 \section{Introduction}
+\subsection{What?}
+This is a project about combinatorial problems, the main topics done are: 
+\begin{itemize}
+    \item Modelling of a combinatorial problem;
+    \item Minizinc as a CSP;
+    \item SAT\addslash SMT;
+\end{itemize}
+\subsection{How?}
+At the beginning of the project, we reasoned over the problem, thinking about how to present the it in a model, with which variables and constraints.\\
+Then, we tried to improve the model by adding symmetry breaking constraints. And lastly, as asked by the project, we considered how to modify the model if we want to consider also the rotation of the circuits.
+
+When we started working, we created different script in python:
+\begin{itemize}
+    \item a converter from \emph{.txt} in \emph{.dzn}, in a format which is compatible with the model we thought;
+    \item a solution checker that checks if a certain solution, produced by the model, if a certain solution is correct, that mean if circuits are not over-lapped;
+    \item a solution to picture converter, that produce an image representing the pieces of circuits with different colour given a solution. 
+    \item a script which executes a Minizinc model with and saves the time of execution;
+\end{itemize}
+Once we got everything we need, we started coding models in Minizinc, and when we were sure that every model works, we translated the model in the SMT in a python notebook. 
+Then we did many tests with Minizinc, such as using different solvers, different search strategies, and different optimization levels. 
+
+\subsection{How to get the same results}
+For Minizinc models, you should use the script we created (to do so, you need to add Minizinc Command line tool into the environment variable \emph{PATH}), because in the script we set some parameters like solver to use, time\-limit, random\-seed. Otherwise you can use the solver configuration file, but notice that solving an instance in the Minizinc IDE is evidently slower than solving the same instance by using the script, this difference is caused by the Minizinc Command line tools.\\
+For the SMT, we can just run the model. \\
+We executed our model on a \emph{Surface book 2} with processor Intel i7-8650U and 8 GB of Ram. If you run our models in other machine, you may obtain different results. 
+
 \clearpage

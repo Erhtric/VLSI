@@ -1,0 +1,71 @@
+\section{Models}\label{models}
+
+\subsection{Base Model}
+The model chosen simply describes the circuits by means of rectangles. The silicon plate is naturally represented by a rectangle of a certain width, let it be \textit{WIDTH}, and a certain height, call it \textit{HEIGHT}. 
+In addition, we are given a set of \emph{N} rectangles, ideally representing our circuits, each of a predefined width $w_i$ and height $h_i$. Each rectangle is handily represented by a tuple $(x_i, y_i)$ with $x_i \in 0,\dots, \textit{WIDTH}$ and $y_i \in 0,\dots, \textit{HEIGHT}$, namely the coordinates of the left-bottom corner of the considered circuit. The objective is to find the smallest enclosing box, the silicon plate, that contains these rectangles without any overlapping between them or in other words find a configuration of coordinates making the enclosing rectangle's area minimal. In this specific project the \textit{WIDTH} of the box is passed as a parameter, and as such is fixed, therefore the objective simplifies to a minimization of the height of the silicon plate. 
+
+\bigskip
+
+\subsubsection{Without rotation}\label{subsubsec:base-without-rot}
+The first formulation does not allow any rotation of the circuits, then each circuit must be placed in a fixed orientation with respect to the others.
+We will define the constraints to be satisfied by means of logical propositions. First of all we have to explicit the constraints that define boundaries in which the rectangles must be placed. Given a generic circuit $c_i$, positioned in $(x_i, y_i)$ and a set of indexes $S = \{1, \dots, N\}$; we could formulate the \textit{boundary constraints} as follows:
+\begin{align}
+    &\forall{i \in  S}.( x_i + w_i \leq \textit{WIDTH}),\\
+    &\forall{i \in  S}.( y_i + h_i \leq \textit{HEIGHT}).
+\end{align}
+
+These constraints ensure that the circuits stays in the plate. In addition to these constraints we have to define the \textit{non-overlapping constraint}. Given two circuits $c_i$, positioned in $(x_i, y_i)$, and $c_j$, positioned in $(x_j, y_j)$, each one with its height and width: 
+\begin{align}
+    \forall i, j \in  S\text{ where } i &\neq j \nonumber \\
+     x_i + w_i \leq x_j& \: \lor \label{left} \\
+     x_i - w_j \geq x_j& \: \lor \label{right}\\
+     y_i + h_i \leq y_j& \: \lor \label{above}\\
+     y_i - h_j \geq y_j& \label{below}.
+\end{align}
+Two circuits are not overlapping if one of these inequalities is true, in particular we can say that:
+\begin{itemize}
+    \item if \eqref{left} is true then $c_i$ is on the left of $c_j$,
+    \item if \eqref{right} is true then $c_i$ is on the right of $c_j$,
+    \item if \eqref{above} is true then $c_i$ is above $c_j$,
+    \item if \eqref{below} is true then $c_i$ is below $c_j$.
+\end{itemize}
+The last ingredient of our model that we have to properly define is the concept of \textit{HEIGHT}. Indeed, we are searching for solutions that aim to minimize it so it comes natural to come up with the function \textit{height} that computes \textit{HEIGHT}:
+$$height() = \max_i {(y_i + h_i)}$$ 
+
+Note that, \textit{HEIGHT} can range freely between $0$ and the \textit{maximum allowable height} which is the result of the following computation:
+$$max\_{height}() = \sum_i {h_i}.$$ 
+Therefore we can introduce the \textit{domain constraints} to the \textit{HEIGHT} variable. 
+\begin{align}
+    &\textit{HEIGHT} \geq 0 \label{height}\\
+        &\textit{HEIGHT} \leq max\_{height}().
+\end{align}
+This could be furthermore improved by reasoning on the fact that the resulting enclosing plate should be at least high as the shortest circuit given. This can be useful to reduce the search space. Said that we can introduce the \textit{minimum allowable height} that it is computed as $min\_{height}() = \min_i {h_i}$ and then modify accordingly the \textit{domain constraint}\eqref{height}:
+\begin{equation}
+   \textit{HEIGHT} \geq min\_{height}() 
+\end{equation}
+In the end, the problem boils down finding the coordinates $(x_i, y_i)$ where $i \in 1, \dots, N$ such that
+$$\text{minimize } height().$$
+
+\subsubsection{With rotation}\label{subsubsec:base-rot}
+The second formulation takes into account rotations. We can see that a rectangle shows an unique different configuration only if it is rotated by 90°. It can be easily seen that this particular rotation simply switch $w$ and $h$; this can be easily achieved by introducing a new variable $rot_i \in \{0, 1\}$ for each circuit \textit{i}. The additional variable is used to indicate the change of orientation of the rectangle: 
+\begin{itemize}
+    \item $rot_i = 0$ - circuit \textit{i} is in its original position,
+    \item $rot_i = 1$ - circuit \textit{i} is rotated by 90°.
+\end{itemize}
+Said that we can modify the constraints mentioned in the previous section accordingly to the addition of the new variable. The \textit{boundary constraints} can be substituted by:
+\begin{align}
+    &\forall{i \in  S}.( x_i + rot_i h_i + (1-rot_i)w_i \leq \textit{WIDTH}),\\
+    &\forall{i \in  S}.( y_i + rot_i w_i + (1-rot_i)h_i \leq \textit{HEIGHT}),
+\end{align}
+while the \textit{non-overlapping} ones in this way:
+\begin{align}
+    \forall i, j \in  S\text{ where } i \neq j \qquad\qquad \qquad&\\
+    x_i + rot_i  h_i + (1 - rot_i)  w_i \leq x_j& \: \lor \\
+    x_i - rot_j  h_j - (1 - rot_j)  w_j \geq x_j& \: \lor \\
+    y_i + rot_i  w_i + (1 - rot_i)  h_j \leq y_j& \: \lor \\
+    y_i - rot_j  w_j - (1 - rot_j)  h_j \geq y_j&.
+\end{align}
+The height function should take into account rotations too, as well as the \textit{maximum allowable height} because now a rotation could modify substantially the maximum height of the silicon plate. Thus: 
+$$height() = \max_i {(y_i + rot_i w_i + (1 -rot_i)h_i)} \qquad max\_{height}() = \sum_i {\max_i{(w_i, h_i)}}.$$ 
+Other constraints or declarations remain the same.
+\clearpage
