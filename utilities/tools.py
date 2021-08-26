@@ -172,6 +172,6 @@ def draw_solution(sol_shape, pieces):
         arr[x:x + x_t, y:y + y_t] = abs(count) * (250 / len(pieces))
         count += 1
         # print(arr)
-    # print(area)
+    # print(f"circuits area sum {area}")
     arr = arr / np.max(arr)
-    return np.rot90(arr)
+    return np.rot90(arr), area

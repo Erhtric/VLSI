@@ -13,17 +13,19 @@ if __name__ == "__main__":
     files = os.listdir(in_path)
     heights = {}
     sol_n = 1
-    files = [f"sol-0{sol_n}.txt" for sol_n in range(1,10)]
+    # files = [f"sol-{sol_n}.txt" for sol_n in range(33,35)]
+    files = os.listdir()
     for f in files:
         obj = re.search("^sol-[0-9]+.txt", f)
         if obj is not None:
             print(f)
             dim, n_circuits, shapes = read_solution_parameters(f)
             heights[f] = dim[1]
-            solution = draw_solution(dim, shapes)
-            print(solution)
+            solution, area = draw_solution(dim, shapes)
+            # print(solution)
             new_f = f.replace("txt", "png")
-            show_shape(solution, new_f, n_circuits,shapes)
+            # show_shape(solution, new_f, n_circuits,shapes)
+            print(f"found area == circuits area sum: {dim[0]*dim[1] == area}")
     print(heights)
 else:
     print("Error")

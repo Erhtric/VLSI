@@ -70,11 +70,11 @@ if __name__ == "__main__":
     models = [
         # "cp_model_1.0.0.mzn",
         # "cp_model_1.0.0_rotations.mzn",
-        "cp_model_1.0.0_rotations_sym.mzn",
-        "cp_model_1.0.0_sym.mzn",
+        # "cp_model_1.0.0_rotations_sym.mzn",
+        # "cp_model_1.0.0_sym.mzn",
         # "cp_model_1.3.0.mzn",
         # "cp_model_1.3.0_rotations.mzn",
-        "cp_model_1.3.0_rotations_sym.mzn",
+        # "cp_model_1.3.0_rotations_sym.mzn",
         "cp_model_1.3.0_sym.mzn"
     ]
     for model_file in models:

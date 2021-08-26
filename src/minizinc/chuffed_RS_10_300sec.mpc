@@ -2,7 +2,5 @@
     "intermediate-solutions": true,
     "random-seed": "10",
     "solver": "org.chuffed.chuffed@0.10.4",
-    "time-limit": 300000,
-    "verbose-compilation": true,
-    "verbose-solving": true
+    "time-limit": 300000
 }
