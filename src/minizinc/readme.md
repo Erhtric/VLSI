@@ -1,0 +1,3 @@
+# How to get same results
+
+For Minizinc models, you should use the script we created (to do so, you need to add Minizinc Command line tool into the environment variable PATH ), because in the script we set some parameters like solver to use, timelimit, randomseed. Otherwise you can use the solver configuration file, but notice that solving an instance in the Minizinc IDE is evidently slower than solving the same instance by using the script, this difference is caused by the Minizinc Command line tools
