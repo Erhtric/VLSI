@@ -10,9 +10,9 @@ if __name__ == "__main__":
         in_path = sys.argv[1]
     if len(sys.argv) == 3:
         out_path = sys.argv[2]
-    files = os.listdir(in_path)
+    # files = os.listdir(in_path)
     heights = {}
-    sol_n = 1
+    # sol_n = 1
     # files = [f"sol-{sol_n}.txt" for sol_n in range(33,35)]
     files = os.listdir()
     for f in files:

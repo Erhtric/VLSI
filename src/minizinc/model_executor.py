@@ -16,15 +16,14 @@ Usage:
 
 def save_result(file_name, res_content):
     """
-    given the file name f and the result of the model with f as data file, this function saves the result out into
+    given the file name f and the result of the model with ins-f as data file, this function saves the result out into
     file f with txt as extension.
     :param file_name:
     :param res_content:
     :return: 
     """
     file_name = file_name.replace("dzn", "txt")
-    file_name = file_name.replace("ins", "sol")
-    file_name = file_name.replace("dzn", "txt")
+    file_name = file_name.replace("ins", "out")
     # print(res_content)
     open_file = open(file_name, "w")
     for i in range(len(res_content) - 2):
@@ -61,8 +60,8 @@ if __name__ == "__main__":
         data_path = sys.argv[2]
         files = get_data_file(data_path)
 
-    if not os.path.isdir("./sol"):
-        os.mkdir("sol")
+    if not os.path.isdir("./out"):
+        os.mkdir("out")
     if len(files) == 0:
         print("There are no data file indicated!")
         exit(-1)
@@ -97,7 +96,7 @@ if __name__ == "__main__":
                 end_time = time.time_ns()
                 total_time += (end_time - begin_time)
                 time_json[f] = (end_time - begin_time) / (10 ** 9)
-                save_result("./sol/" + f, out)
+                save_result("./out/" + f, out)
             except KeyboardInterrupt:
                 print("Time limit reached!")
                 time_json[f] = -1
